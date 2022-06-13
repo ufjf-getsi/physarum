@@ -1,25 +1,20 @@
-import logo from './logo.svg';
+import React from 'react';
+import Canvas from './components/Canvas/Canvas';
 import './App.css';
 
-function App() {
+export default function App() {
+
+  const draw = (ctx, frameCount) => {
+    ctx.fillStyle = "rgb(200,0,0)";
+    ctx.fillRect(10, 10, 55, 50);
+
+    ctx.fillStyle = "rgba(0, 0, 200, 0.5)";
+    ctx.fillRect(30, 30, 55, 50);
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Canvas draw={draw} />
     </div>
   );
 }
-
-export default App;
