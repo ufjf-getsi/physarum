@@ -9,15 +9,13 @@ const useCanvas = draw => {
         if (canvas.getContext) {
             const context = canvas.getContext("2d");
 
-            let frameCount = 0;
             let animationFrameId;
 
-            const render = () => {
-                frameCount++;
-                draw(context, frameCount);
+            const render = (t) => {
+                draw(context, t);
                 animationFrameId = window.requestAnimationFrame(render);
             };
-            render();
+            render(0);
 
             return () => {
                 window.cancelAnimationFrame(animationFrameId);
