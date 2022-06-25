@@ -3,8 +3,8 @@ import Canvas from "./components/Canvas/Canvas";
 import "./App.css";
 
 // Tamanho da matriz de plano
-const LINHAS = 10;
-const COLUNAS = 10;
+const LINHAS = 200;
+const COLUNAS = 200;
 
 export default function App() {
   let plano = [];
@@ -16,15 +16,15 @@ export default function App() {
     plano[l] = [];
     planoFuturo[l] = [];
     for (let c = 0; c < COLUNAS; c++) {
-      plano[l][c] = Math.random() * 10; // Número aleatório entre 0 e 9.99...
+      plano[l][c] = Math.random(); // Número aleatório entre 0 e 0.999...
       planoFuturo[l][c] = plano[l][c];
     }
   }
 
   //Define um espaço no plano como valor máximo
-  //plano[Math.floor(LINHAS / 2)][Math.floor(COLUNAS / 2)] = 10;
-  //plano[0][0] = 10;
-  //plano[27][32] = 10;
+  //plano[Math.floor(LINHAS / 2)][Math.floor(COLUNAS / 2)] = 1;
+  //plano[0][0] = 100;
+  //plano[7][3] = 0;
 
   // Desenha na tela
   const draw = (ctx, t) => {
@@ -39,26 +39,28 @@ export default function App() {
     // Desenha na tela conforme os valores do plano
     for (let l = 0; l < LINHAS; l++) {
       for (let c = 0; c < COLUNAS; c++) {
-        ctx.fillStyle = `hsl(${(10 - plano[l][c]) * 10}deg, 100%, 50%)`;
+        ctx.fillStyle = `hsl(${(1 - plano[l][c]) * 100}deg, 100%, 50%)`;
         ctx.fillRect(c * 10, l * 10, 10, 10);
       }
     }
+    /*
     for (let l = 0; l < LINHAS; l++) {
       for (let c = 0; c < COLUNAS; c++) {
         ctx.fillStyle = "black";
-        ctx.fillText(plano[l][c].toFixed(0), c * 10, l * 10 + 10);
+        ctx.fillText((plano[l][c] * 10).toFixed(0), c * 10, l * 10 + 10);
       }
-    }
+    }*/
     //ctx.fillText(dt * 1, 10, 10);
 
     // Difusão da concetração
     difusao(plano, planoFuturo, dt);
-
     atualizaPlano(plano, planoFuturo);
 
     // Define tempo inicial da próxima animação como o tempo atual
     t0 = t;
   };
+
+  console.table(plano);
 
   return (
     <div className="app">
@@ -70,28 +72,48 @@ export default function App() {
 }
 
 function calculaAcrescimoIntensidade(plano, l, c) {
-  const OC = 0.2;
-  const DC = 0.05;
+  let celulasADispersar = 8;
+  if (l === 0 || l === LINHAS - 1) {
+    celulasADispersar = celulasADispersar - 3;
+  }
+  if (c === 0 || c === COLUNAS - 1) {
+    celulasADispersar = celulasADispersar - 3;
+  }
+  if (
+    (l === 0 && c === 0) ||
+    (l === 0 && c === COLUNAS - 1) ||
+    (l === LINHAS - 1 && c === 0) ||
+    (l === LINHAS - 1 && c === COLUNAS - 1)
+  ) {
+    celulasADispersar = celulasADispersar + 1;
+  }
+
+  const pesoOrtog = 1 / celulasADispersar;
+  const pesoDiag = 1 / celulasADispersar;
   let intensidadeRedor = 0;
 
-  if (l - 1 > 0) intensidadeRedor += plano[l - 1][c] * OC;
-  if (l + 1 < LINHAS) intensidadeRedor += plano[l + 1][c] * OC;
-  if (c - 1 > 0) intensidadeRedor += plano[l][c - 1] * OC;
-  if (c + 1 < COLUNAS) intensidadeRedor += plano[l][c + 1] * OC;
-  if (l - 1 > 0 && c - 1 > 0) intensidadeRedor += plano[l - 1][c - 1] * DC;
-  if (l - 1 > 0 && c + 1 < COLUNAS)
-    intensidadeRedor += plano[l - 1][c + 1] * DC;
-  if (l + 1 < LINHAS && c - 1 > 0) intensidadeRedor += plano[l + 1][c - 1] * DC;
+  if (l - 1 >= 0) intensidadeRedor += plano[l - 1][c] * pesoOrtog;
+  if (l + 1 < LINHAS) intensidadeRedor += plano[l + 1][c] * pesoOrtog;
+  if (c - 1 >= 0) intensidadeRedor += plano[l][c - 1] * pesoOrtog;
+  if (c + 1 < COLUNAS) intensidadeRedor += plano[l][c + 1] * pesoOrtog;
+
+  if (l - 1 >= 0 && c - 1 >= 0)
+    intensidadeRedor += plano[l - 1][c - 1] * pesoDiag;
+  if (l - 1 >= 0 && c + 1 < COLUNAS)
+    intensidadeRedor += plano[l - 1][c + 1] * pesoDiag;
+  if (l + 1 < LINHAS && c - 1 >= 0)
+    intensidadeRedor += plano[l + 1][c - 1] * pesoDiag;
   if (l + 1 < LINHAS && c + 1 < COLUNAS)
-    intensidadeRedor += plano[l + 1][c + 1] * DC;
+    intensidadeRedor += plano[l + 1][c + 1] * pesoDiag;
+
   intensidadeRedor += plano[l][c] * -1;
 
   return intensidadeRedor;
 }
 
 function difusao(plano, planoFuturo, dt) {
-  const fatorDecaimento = 0.06;
-  const fatorDifusao = 10.5;
+  const fatorDecaimento = 0.006;
+  const fatorDifusao = 1.05;
 
   for (let l = 0; l < LINHAS; l++) {
     for (let c = 0; c < COLUNAS; c++) {
