@@ -16,13 +16,13 @@ export default function App() {
     plano[l] = [];
     planoFuturo[l] = [];
     for (let c = 0; c < COLUNAS; c++) {
-      plano[l][c] = Math.random(); // Número aleatório entre 0 e 0.999...
+      plano[l][c] = Math.random() * 1; // Número aleatório entre 0 e 0.999...
       planoFuturo[l][c] = plano[l][c];
     }
   }
 
   //Define um espaço no plano como valor máximo
-  //plano[Math.floor(LINHAS / 2)][Math.floor(COLUNAS / 2)] = 1;
+  //plano[Math.floor(LINHAS / 2)][Math.floor(COLUNAS / 2)] = 100;
   //plano[0][0] = 100;
   //plano[7][3] = 0;
 
@@ -60,8 +60,6 @@ export default function App() {
     t0 = t;
   };
 
-  console.table(plano);
-
   return (
     <div className="app">
       <div className="app-container">
@@ -72,24 +70,21 @@ export default function App() {
 }
 
 function calculaAcrescimoIntensidade(plano, l, c) {
-  let celulasADispersar = 8;
-  if (l === 0 || l === LINHAS - 1) {
-    celulasADispersar = celulasADispersar - 3;
-  }
-  if (c === 0 || c === COLUNAS - 1) {
-    celulasADispersar = celulasADispersar - 3;
-  }
+  let pesoOrtog = 3 / 16;
+  let pesoDiag = 1 / 16;
   if (
     (l === 0 && c === 0) ||
     (l === 0 && c === COLUNAS - 1) ||
     (l === LINHAS - 1 && c === 0) ||
     (l === LINHAS - 1 && c === COLUNAS - 1)
   ) {
-    celulasADispersar = celulasADispersar + 1;
+    pesoOrtog = 3 / 8;
+    pesoDiag = 1 / 4;
+  } else if (l === 0 || l === LINHAS - 1 || c === 0 || c === COLUNAS - 1) {
+    pesoOrtog = 1 / 4;
+    pesoDiag = 1 / 8;
   }
 
-  const pesoOrtog = 1 / celulasADispersar;
-  const pesoDiag = 1 / celulasADispersar;
   let intensidadeRedor = 0;
 
   if (l - 1 >= 0) intensidadeRedor += plano[l - 1][c] * pesoOrtog;
@@ -112,7 +107,7 @@ function calculaAcrescimoIntensidade(plano, l, c) {
 }
 
 function difusao(plano, planoFuturo, dt) {
-  const fatorDecaimento = 0.006;
+  const fatorDecaimento = 0.06;
   const fatorDifusao = 1.05;
 
   for (let l = 0; l < LINHAS; l++) {
