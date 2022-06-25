@@ -1,13 +1,12 @@
-import React from 'react';
-import Canvas from './components/Canvas/Canvas';
-import './App.css';
+import React from "react";
+import Canvas from "./components/Canvas/Canvas";
+import "./App.css";
 
 // Tamanho da matriz de plano
-const LINHAS = 5;
-const COLUNAS = 5;
+const LINHAS = 10;
+const COLUNAS = 10;
 
 export default function App() {
-
   let plano = [];
   let planoFuturo = [];
   let t0 = null; // Tempo inicial
@@ -17,16 +16,21 @@ export default function App() {
     plano[l] = [];
     planoFuturo[l] = [];
     for (let c = 0; c < COLUNAS; c++) {
-      plano[l][c] = Math.random() * 0; // Número aleatório entre 0 e 9.99...
+      plano[l][c] = Math.random() * 10; // Número aleatório entre 0 e 9.99...
+      planoFuturo[l][c] = plano[l][c];
     }
   }
 
   //Define um espaço no plano como valor máximo
-  plano[Math.floor(LINHAS / 2)][Math.floor(COLUNAS / 2)] = 1000;
+  //plano[Math.floor(LINHAS / 2)][Math.floor(COLUNAS / 2)] = 10;
+  //plano[0][0] = 10;
+  //plano[27][32] = 10;
 
   // Desenha na tela
   const draw = (ctx, t) => {
-    if (t0 === null) { t0 = t; }
+    if (t0 === null) {
+      t0 = t;
+    }
     const dt = (t - t0) / 1000; // Intervalo entre tempo atual e anterior
 
     // Limpa desenho anterior
@@ -37,8 +41,12 @@ export default function App() {
       for (let c = 0; c < COLUNAS; c++) {
         ctx.fillStyle = `hsl(${(10 - plano[l][c]) * 10}deg, 100%, 50%)`;
         ctx.fillRect(c * 10, l * 10, 10, 10);
-        //ctx.fillStyle = "black";
-        //ctx.fillText(plano[l][c].toFixed(3), l * 10, c * 10 + 10);
+      }
+    }
+    for (let l = 0; l < LINHAS; l++) {
+      for (let c = 0; c < COLUNAS; c++) {
+        ctx.fillStyle = "black";
+        ctx.fillText(plano[l][c].toFixed(0), c * 10, l * 10 + 10);
       }
     }
     //ctx.fillText(dt * 1, 10, 10);
@@ -71,25 +79,31 @@ function calculaAcrescimoIntensidade(plano, l, c) {
   if (c - 1 > 0) intensidadeRedor += plano[l][c - 1] * OC;
   if (c + 1 < COLUNAS) intensidadeRedor += plano[l][c + 1] * OC;
   if (l - 1 > 0 && c - 1 > 0) intensidadeRedor += plano[l - 1][c - 1] * DC;
-  if (l - 1 > 0 && c + 1 < COLUNAS) intensidadeRedor += plano[l - 1][c + 1] * DC;
+  if (l - 1 > 0 && c + 1 < COLUNAS)
+    intensidadeRedor += plano[l - 1][c + 1] * DC;
   if (l + 1 < LINHAS && c - 1 > 0) intensidadeRedor += plano[l + 1][c - 1] * DC;
-  if (l + 1 < LINHAS && c + 1 < COLUNAS) intensidadeRedor += plano[l + 1][c + 1] * DC;
+  if (l + 1 < LINHAS && c + 1 < COLUNAS)
+    intensidadeRedor += plano[l + 1][c + 1] * DC;
   intensidadeRedor += plano[l][c] * -1;
 
   return intensidadeRedor;
 }
 
 function difusao(plano, planoFuturo, dt) {
-
   const fatorDecaimento = 0.06;
   const fatorDifusao = 10.5;
 
   for (let l = 0; l < LINHAS; l++) {
     for (let c = 0; c < COLUNAS; c++) {
-
       const elemento = plano[l][c];
-      planoFuturo[l][c] = elemento + (fatorDifusao * calculaAcrescimoIntensidade(plano, l, c) - fatorDecaimento * elemento) * dt;
-      if (planoFuturo[l][c] < 0) { planoFuturo[l][c] = 0 };
+      planoFuturo[l][c] =
+        elemento +
+        (fatorDifusao * calculaAcrescimoIntensidade(plano, l, c) -
+          fatorDecaimento * elemento) *
+          dt;
+      if (planoFuturo[l][c] < 0) {
+        planoFuturo[l][c] = 0;
+      }
     }
   }
 }
