@@ -3,13 +3,47 @@ import Canvas from "./components/Canvas/Canvas";
 import "./App.css";
 
 // Tamanho da matriz de plano
-const LINHAS = 200;
-const COLUNAS = 200;
+const LINHAS = 50;
+const COLUNAS = 50;
+const TAMANHO = 10;
 
 export default function App() {
   let plano = [];
   let planoFuturo = [];
   let t0 = null; // Tempo inicial
+  let desenhoPermitido = false;
+
+  // Gerenciadores de eventos
+  const handleMouseMove = (event) => {
+    if (desenhoPermitido) depositaIntensidade(event);
+  };
+  const handleMouseDown = () => {
+    desenhoPermitido = true;
+  };
+  window.addEventListener("mouseup", () => {
+    desenhoPermitido = false;
+  });
+  const handleTouchMove = (event) => {
+    const toques = event.changedTouches;
+    for (const key in toques) {
+      if (toques.hasOwnProperty(key)) {
+        const toque = toques[key];
+        depositaIntensidade(toque);
+      }
+    }
+  };
+
+  function depositaIntensidade(e) {
+    const canvas = e.target;
+    const caixa = canvas.getBoundingClientRect();
+    const escalaX = canvas.width / caixa.width;
+    const escalaY = canvas.height / caixa.height;
+    const x = (e.clientX - caixa.x) * escalaX;
+    const y = (e.clientY - caixa.top) * escalaY;
+    const l = Math.floor(y / TAMANHO);
+    const c = Math.floor(x / TAMANHO);
+    if (l >= 0 && l < LINHAS && c >= 0 && c < COLUNAS) plano[l][c] = 1;
+  }
 
   // Preenche o plano com valores aleatórios
   for (let l = 0; l < LINHAS; l++) {
@@ -21,9 +55,9 @@ export default function App() {
     }
   }
 
-  //Define um espaço no plano como valor máximo
-  //plano[Math.floor(LINHAS / 2)][Math.floor(COLUNAS / 2)] = 100;
-  //plano[0][0] = 100;
+  //Testes
+  //plano[Math.floor(LINHAS / 2)][Math.floor(COLUNAS / 2)] = 1;
+  //plano[0][0] = 1;
   //plano[7][3] = 0;
 
   // Desenha na tela
@@ -40,9 +74,10 @@ export default function App() {
     for (let l = 0; l < LINHAS; l++) {
       for (let c = 0; c < COLUNAS; c++) {
         ctx.fillStyle = `hsl(${(1 - plano[l][c]) * 100}deg, 100%, 50%)`;
-        ctx.fillRect(c * 10, l * 10, 10, 10);
+        ctx.fillRect(c * TAMANHO, l * TAMANHO, TAMANHO, TAMANHO);
       }
     }
+    // Escreve valores aproximados de cada célula
     /*
     for (let l = 0; l < LINHAS; l++) {
       for (let c = 0; c < COLUNAS; c++) {
@@ -50,7 +85,6 @@ export default function App() {
         ctx.fillText((plano[l][c] * 10).toFixed(0), c * 10, l * 10 + 10);
       }
     }*/
-    //ctx.fillText(dt * 1, 10, 10);
 
     // Difusão da concetração
     difusao(plano, planoFuturo, dt);
@@ -63,7 +97,14 @@ export default function App() {
   return (
     <div className="app">
       <div className="app-container">
-        <Canvas draw={draw} width={LINHAS * 10} height={COLUNAS * 10} />
+        <Canvas
+          draw={draw}
+          width={LINHAS * TAMANHO}
+          height={COLUNAS * TAMANHO}
+          handleMouseMove={handleMouseMove}
+          handleMouseDown={handleMouseDown}
+          handleTouchMove={handleTouchMove}
+        />
       </div>
     </div>
   );
@@ -86,12 +127,10 @@ function calculaAcrescimoIntensidade(plano, l, c) {
   }
 
   let intensidadeRedor = 0;
-
   if (l - 1 >= 0) intensidadeRedor += plano[l - 1][c] * pesoOrtog;
   if (l + 1 < LINHAS) intensidadeRedor += plano[l + 1][c] * pesoOrtog;
   if (c - 1 >= 0) intensidadeRedor += plano[l][c - 1] * pesoOrtog;
   if (c + 1 < COLUNAS) intensidadeRedor += plano[l][c + 1] * pesoOrtog;
-
   if (l - 1 >= 0 && c - 1 >= 0)
     intensidadeRedor += plano[l - 1][c - 1] * pesoDiag;
   if (l - 1 >= 0 && c + 1 < COLUNAS)
@@ -100,7 +139,6 @@ function calculaAcrescimoIntensidade(plano, l, c) {
     intensidadeRedor += plano[l + 1][c - 1] * pesoDiag;
   if (l + 1 < LINHAS && c + 1 < COLUNAS)
     intensidadeRedor += plano[l + 1][c + 1] * pesoDiag;
-
   intensidadeRedor += plano[l][c] * -1;
 
   return intensidadeRedor;
