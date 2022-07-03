@@ -4,16 +4,6 @@
   box-sizing: border-box;
 }
 
-.linha {
-  display: flex;
-  flex-direction: row;
-}
-
-.coluna {
-  display: flex;
-  flex-direction: column;
-}
-
 form.formulario {
   display: flex;
   flex-direction: column;

@@ -15,3 +15,28 @@
   font-size: calc(0.5em + 2vmin);
   color: white;
 }
+
+.linha {
+  display: flex;
+  flex-direction: row;
+}
+
+.coluna {
+  display: flex;
+  flex-direction: column;
+}
+
+div.grupo-info {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: 0.25em;
+}
+
+div.grupo-info > label {
+  margin-right: 0.25em;
+}
+
+div.grupo-info > p {
+  margin: 0;
+}

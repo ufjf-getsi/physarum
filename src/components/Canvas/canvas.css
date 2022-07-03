@@ -1,4 +1,5 @@
 .canvas {
   overflow: auto;
   touch-action: none;
+  background-color: wheat;
 }

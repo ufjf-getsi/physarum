@@ -17,6 +17,10 @@ let fatorDecaimento = 0.062;
 let fatorAdicao = 0.055;
 let fatorDifusao = { a: 1, b: 0.5 };
 
+// Referências de elementos
+const infoA = null;
+const infoB = null;
+
 export default function App() {
   let t0 = null; // Tempo inicial
   let desenhoPermitido = false;
@@ -51,8 +55,8 @@ export default function App() {
     event.preventDefault();
     const formInputs = event.target.querySelectorAll("input");
     const inputValues = Array.from(formInputs, (x) => x.value);
-    fatorDecaimento = Number(inputValues[0]);
-    fatorAdicao = Number(inputValues[1]);
+    fatorAdicao = Number(inputValues[0]);
+    fatorDecaimento = Number(inputValues[1]);
     fatorDifusao.a = Number(inputValues[2]);
     fatorDifusao.b = Number(inputValues[3]);
     let linhasForm = parseInt(inputValues[4]);
@@ -125,22 +129,25 @@ export default function App() {
     // Limpa desenho anterior
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
-    let somaIntensidade = 0;
+    let somaIntensidadeA = 0;
+    let somaIntensidadeB = 0;
     // Desenha na tela conforme os valores do plano
     for (let l = 0; l < LINHAS; l++) {
       for (let c = 0; c < COLUNAS; c++) {
         let intensidadeA = simulacao.plano[l][c].a;
         let intensidadeB = simulacao.plano[l][c].b;
-        ctx.fillStyle = `hsl(${(1 - intensidadeA) * 100}deg, 100%, ${
-          intensidadeB * 100
-        }%)`;
-        somaIntensidade += intensidadeB;
+        somaIntensidadeA += intensidadeA;
+        somaIntensidadeB += intensidadeB;
+
+        ctx.fillStyle = `hsla(${(1 - intensidadeA) * 100}deg, 100%, 50%, 50%)`;
+        ctx.fillRect(c * TAMANHO, l * TAMANHO, TAMANHO, TAMANHO);
+        ctx.fillStyle = `hsla(${(1 - intensidadeA) * 100}deg, 100%, 50%, 50%)`;
         ctx.fillRect(c * TAMANHO, l * TAMANHO, TAMANHO, TAMANHO);
       }
     }
     // Exibe concentração total
-    // ctx.fillStyle = "white";
-    // ctx.fillText(somaIntensidade, 3 * 10, 3 * 10 + 10);
+    document.getElementById("infoFerA").innerText = somaIntensidadeA.toFixed(2);
+    document.getElementById("infoFerB").innerText = somaIntensidadeB.toFixed(2);
 
     // Difusão da concentração
     difusao(simulacao.plano, simulacao.planoFuturo, dt);
@@ -167,6 +174,16 @@ export default function App() {
             handleTouchMove={handleTouchMove}
             animacaoPermitida={animacaoPermitida}
           />
+        </div>
+        <div className="linha">
+          <div className="grupo-info">
+            <label htmlFor="ferA">A:</label>
+            <p id="infoFerA">0</p>
+          </div>
+          <div className="grupo-info">
+            <label htmlFor="ferB">B:</label>
+            <p id="infoFerB">0</p>
+          </div>
         </div>
         <Formulario handleClick={handleClick} handleSubmit={handleSubmit} />
       </div>
@@ -234,7 +251,6 @@ function difusao(plano, planoFuturo, dt) {
           intensidadeA * intensidadeB * intensidadeB -
           (fatorDecaimento + fatorAdicao) * intensidadeB) *
           dt;
-      // console.log(intensidadeBFutura);
       if (intensidadeAFutura > 0) planoFuturo[l][c].a = intensidadeAFutura;
       else planoFuturo[l][c].a = 0;
       if (intensidadeBFutura > 0) planoFuturo[l][c].b = intensidadeBFutura;

@@ -14,18 +14,6 @@ export default function Formulario(props) {
           <div className="linha">
             <div className="coluna">
               <div className="grupo-input">
-                <label htmlFor="fatorDecaimentoInput">Decaimento</label>
-                <input
-                  id="fatorDecaimentoInput"
-                  name="fatorDecaimento"
-                  type="number"
-                  min="0"
-                  max="10"
-                  step="0.001"
-                  defaultValue="0.062"
-                />
-              </div>
-              <div className="grupo-input">
                 <label htmlFor="fatorAdicaoInput">Adição</label>
                 <input
                   id="fatorAdicaoInput"
@@ -35,6 +23,18 @@ export default function Formulario(props) {
                   max="10"
                   step="0.001"
                   defaultValue="0.055"
+                />
+              </div>
+              <div className="grupo-input">
+                <label htmlFor="fatorDecaimentoInput">Decaimento</label>
+                <input
+                  id="fatorDecaimentoInput"
+                  name="fatorDecaimento"
+                  type="number"
+                  min="0"
+                  max="10"
+                  step="0.001"
+                  defaultValue="0.062"
                 />
               </div>
             </div>
