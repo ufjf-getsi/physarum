@@ -4,8 +4,8 @@ import "./App.css";
 import Formulario from "./components/Formulario/Formulario";
 
 // Dimensões do plano
-const LINHAS = 50;
-const COLUNAS = 50;
+let LINHAS = 50;
+let COLUNAS = 50;
 const TAMANHO = 10;
 const simulacao = { plano: [], planoFuturo: [] };
 
@@ -14,7 +14,7 @@ let animacaoPermitida = true;
 
 // Controle do modelo
 let fatorDecaimento = 0.062;
-const fatorAlimentacao = 0.055;
+let fatorAdicao = 0.055;
 let fatorDifusao = { a: 1, b: 0.5 };
 
 export default function App() {
@@ -49,13 +49,41 @@ export default function App() {
   };
   const handleSubmit = (event) => {
     event.preventDefault();
-    const formConfigGroups = event.target.firstElementChild.children;
-    const inputValues = Array.from(
-      formConfigGroups,
-      (x) => x.lastElementChild.value
-    );
-    fatorDecaimento = inputValues[0];
-    fatorDifusao.a = inputValues[1];
+    const formInputs = event.target.querySelectorAll("input");
+    const inputValues = Array.from(formInputs, (x) => x.value);
+    fatorDecaimento = Number(inputValues[0]);
+    fatorAdicao = Number(inputValues[1]);
+    fatorDifusao.a = Number(inputValues[2]);
+    fatorDifusao.b = Number(inputValues[3]);
+    let linhasForm = parseInt(inputValues[4]);
+    let colunasForm = parseInt(inputValues[5]);
+
+    if (linhasForm !== LINHAS || colunasForm !== COLUNAS) {
+      const novoPlano = [];
+      const novoPlanoFuturo = [];
+      for (let l = 0; l < linhasForm; l++) {
+        novoPlano[l] = [];
+        novoPlanoFuturo[l] = [];
+        for (let c = 0; c < colunasForm; c++) {
+          if (l < LINHAS && c < COLUNAS) {
+            // Célula existia antes
+            novoPlano[l][c] = simulacao.plano[l][c];
+            novoPlanoFuturo[l][c] = simulacao.planoFuturo[l][c];
+          } else {
+            // Nova célula
+            novoPlano[l][c] = { a: 0, b: 0 };
+            novoPlanoFuturo[l][c] = { a: 0, b: 0 };
+          }
+        }
+      }
+      simulacao.plano = novoPlano;
+      simulacao.planoFuturo = novoPlanoFuturo;
+      LINHAS = linhasForm;
+      COLUNAS = colunasForm;
+      const canvas = document.querySelector("canvas");
+      canvas.setAttribute("width", COLUNAS * 10);
+      canvas.setAttribute("height", LINHAS * 10);
+    }
   };
 
   function depositaIntensidade(e) {
@@ -76,9 +104,9 @@ export default function App() {
     simulacao.plano[l] = [];
     simulacao.planoFuturo[l] = [];
     for (let c = 0; c < COLUNAS; c++) {
-      const celulaPlano = { a: 0, b: 1 };
+      const celulaPlano = { a: Math.random(), b: Math.random() }; // Número aleatório entre 0 e 0.999...
       const celulaPlanoFuturo = { a: 0, b: 0 };
-      simulacao.plano[l][c] = celulaPlano; // Número aleatório entre 0 e 0.999...
+      simulacao.plano[l][c] = celulaPlano;
       simulacao.planoFuturo[l][c] = celulaPlanoFuturo;
     }
   }
@@ -111,8 +139,8 @@ export default function App() {
       }
     }
     // Exibe concentração total
-    ctx.fillStyle = "black";
-    ctx.fillText(somaIntensidade, 3 * 10, 3 * 10 + 10);
+    // ctx.fillStyle = "white";
+    // ctx.fillText(somaIntensidade, 3 * 10, 3 * 10 + 10);
 
     // Difusão da concentração
     difusao(simulacao.plano, simulacao.planoFuturo, dt);
@@ -198,13 +226,13 @@ function difusao(plano, planoFuturo, dt) {
         intensidadeA +
         (fatorDifusao["a"] * calculaAcrescimoIntensidade(plano, l, c, "a") -
           intensidadeA * intensidadeB * intensidadeB +
-          fatorAlimentacao * (1 - intensidadeA)) *
+          fatorAdicao * (1 - intensidadeA)) *
           dt;
       const intensidadeBFutura =
         intensidadeB +
         (fatorDifusao["b"] * calculaAcrescimoIntensidade(plano, l, c, "b") +
           intensidadeA * intensidadeB * intensidadeB -
-          (fatorDecaimento + fatorAlimentacao) * intensidadeB) *
+          (fatorDecaimento + fatorAdicao) * intensidadeB) *
           dt;
       // console.log(intensidadeBFutura);
       if (intensidadeAFutura > 0) planoFuturo[l][c].a = intensidadeAFutura;

@@ -1,6 +1,17 @@
 .config-container {
   display: flex;
   flex-direction: column;
+  box-sizing: border-box;
+}
+
+.linha {
+  display: flex;
+  flex-direction: row;
+}
+
+.coluna {
+  display: flex;
+  flex-direction: column;
 }
 
 form.formulario {
@@ -15,4 +26,10 @@ form.formulario .configuracoes {
 form.formulario div.grupo-input {
   display: flex;
   flex-direction: column;
+  min-width: fit-content;
+  padding: 0.1em 0.25em 0.1em 0.25em;
+}
+
+form.formulario div.grupo-input label {
+  white-space: nowrap;
 }
