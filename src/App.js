@@ -3,8 +3,8 @@ import Canvas from "./components/Canvas/Canvas";
 import "./App.css";
 
 // Tamanho da matriz de plano
-const LINHAS = 10;
-const COLUNAS = 10;
+const LINHAS = 20;
+const COLUNAS = 50;
 const TAMANHO = 10;
 
 export default function App() {
@@ -105,8 +105,8 @@ export default function App() {
       <div className="app-container">
         <Canvas
           draw={draw}
-          width={LINHAS * TAMANHO}
-          height={COLUNAS * TAMANHO}
+          width={COLUNAS * TAMANHO}
+          height={LINHAS * TAMANHO}
           handleMouseMove={handleMouseMove}
           handleMouseDown={handleMouseDown}
           handleTouchMove={handleTouchMove}
@@ -117,25 +117,6 @@ export default function App() {
 }
 
 function calculaAcrescimoIntensidade(plano, l, c) {
-  /*
-  let pesoOrtog = 3 / 16;
-  let pesoDiag = 1 / 16;
-  if (
-    // Quinas
-    (l === 0 && c === 0) ||
-    (l === 0 && c === COLUNAS - 1) ||
-    (l === LINHAS - 1 && c === 0) ||
-    (l === LINHAS - 1 && c === COLUNAS - 1)
-  ) {
-    pesoOrtog = 3 / 8;
-    pesoDiag = 1 / 4;
-  } else if (l === 0 || l === LINHAS - 1 || c === 0 || c === COLUNAS - 1) {
-    // Bordas
-    pesoOrtog = 1 / 4;
-    pesoDiag = 1 / 8;
-  }
-  */
-
   let pesoOrtog = 0.2;
   let pesoDiag = 0.05;
   let remocao = 0;
@@ -180,7 +161,7 @@ function calculaAcrescimoIntensidade(plano, l, c) {
 
 function difusao(plano, planoFuturo, dt) {
   const fatorDecaimento = 0.06;
-  const fatorDifusao = 1.0;
+  const fatorDifusao = 1.05;
 
   for (let l = 0; l < LINHAS; l++) {
     for (let c = 0; c < COLUNAS; c++) {
