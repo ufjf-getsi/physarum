@@ -21,7 +21,7 @@ export default function Canvas(props) {
       width={width}
       height={height}
       onMouseMove={(event) => handleMouseMove(event)}
-      onMouseDown={() => handleMouseDown()}
+      onMouseDown={(event) => handleMouseDown(event)}
       onTouchMove={(event) => handleTouchMove(event)}
     ></canvas>
   );

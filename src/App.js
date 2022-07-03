@@ -1,14 +1,19 @@
 import React from "react";
 import Canvas from "./components/Canvas/Canvas";
 import "./App.css";
+import Formulario from "./components/Formulario/Formulario";
 
 // Dimensões do plano
 const LINHAS = 20;
-const COLUNAS = 50;
+const COLUNAS = 200;
 const TAMANHO = 10;
 
 // Controle de animação
 let animacaoPermitida = true;
+
+// Controle do modelo
+let fatorDecaimento = 0.06;
+let fatorDifusao = 1.05;
 
 export default function App() {
   let plano = [];
@@ -18,9 +23,11 @@ export default function App() {
 
   // Gerenciadores de eventos
   const handleMouseMove = (event) => {
+    event.preventDefault();
     if (desenhoPermitido) depositaIntensidade(event);
   };
-  const handleMouseDown = () => {
+  const handleMouseDown = (event) => {
+    event.preventDefault();
     desenhoPermitido = true;
   };
   window.addEventListener("mouseup", () => {
@@ -34,6 +41,23 @@ export default function App() {
         depositaIntensidade(toque);
       }
     }
+  };
+  const handleClick = (event) => {
+    if (animacaoPermitida) event.currentTarget.innerText = "Continuar";
+    else event.currentTarget.innerText = "Pausar";
+    animacaoPermitida = !animacaoPermitida;
+  };
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const formConfigGroups = event.target.firstElementChild.children;
+    const inputValues = Array.from(
+      formConfigGroups,
+      (x) => x.lastElementChild.value
+    );
+    fatorDecaimento = inputValues[0];
+    fatorDifusao = inputValues[1];
+
+    console.log(inputValues);
   };
 
   function depositaIntensidade(e) {
@@ -110,17 +134,7 @@ export default function App() {
             animacaoPermitida={animacaoPermitida}
           />
         </div>
-        <div>
-          <button
-            onClick={function (e) {
-              if (animacaoPermitida) e.currentTarget.innerText = "Continuar";
-              else e.currentTarget.innerText = "Pausar";
-              animacaoPermitida = !animacaoPermitida;
-            }}
-          >
-            Pausar
-          </button>
-        </div>
+        <Formulario handleClick={handleClick} handleSubmit={handleSubmit} />
       </div>
     </div>
   );
@@ -170,9 +184,6 @@ function calculaAcrescimoIntensidade(plano, l, c) {
 }
 
 function difusao(plano, planoFuturo, dt) {
-  const fatorDecaimento = 0.06;
-  const fatorDifusao = 1.05;
-
   for (let l = 0; l < LINHAS; l++) {
     for (let c = 0; c < COLUNAS; c++) {
       const elemento = plano[l][c];

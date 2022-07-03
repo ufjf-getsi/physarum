@@ -1,3 +1,4 @@
 .canvas {
-    overflow: auto;
+  overflow: auto;
+  touch-action: none;
 }
