@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/physarum/static/css/main.9aa96767.css",
-    "main.js": "/physarum/static/js/main.cfee6b9a.js",
+    "main.css": "/physarum/static/css/main.3cd8fec7.css",
+    "main.js": "/physarum/static/js/main.2f218b0b.js",
     "static/js/787.28cb0dcd.chunk.js": "/physarum/static/js/787.28cb0dcd.chunk.js",
     "index.html": "/physarum/index.html",
-    "main.9aa96767.css.map": "/physarum/static/css/main.9aa96767.css.map",
-    "main.cfee6b9a.js.map": "/physarum/static/js/main.cfee6b9a.js.map",
+    "main.3cd8fec7.css.map": "/physarum/static/css/main.3cd8fec7.css.map",
+    "main.2f218b0b.js.map": "/physarum/static/js/main.2f218b0b.js.map",
     "787.28cb0dcd.chunk.js.map": "/physarum/static/js/787.28cb0dcd.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.9aa96767.css",
-    "static/js/main.cfee6b9a.js"
+    "static/css/main.3cd8fec7.css",
+    "static/js/main.2f218b0b.js"
   ]
 }
