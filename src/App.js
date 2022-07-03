@@ -13,8 +13,9 @@ const simulacao = { plano: [], planoFuturo: [] };
 let animacaoPermitida = true;
 
 // Controle do modelo
-let fatorDecaimento = 0.06;
-let fatorDifusao = 1.05;
+let fatorDecaimento = 0.062;
+const fatorAlimentacao = 0.055;
+let fatorDifusao = { a: 1, b: 0.5 };
 
 export default function App() {
   let t0 = null; // Tempo inicial
@@ -54,7 +55,7 @@ export default function App() {
       (x) => x.lastElementChild.value
     );
     fatorDecaimento = inputValues[0];
-    fatorDifusao = inputValues[1];
+    fatorDifusao.a = inputValues[1];
   };
 
   function depositaIntensidade(e) {
@@ -75,7 +76,7 @@ export default function App() {
     simulacao.plano[l] = [];
     simulacao.planoFuturo[l] = [];
     for (let c = 0; c < COLUNAS; c++) {
-      const celulaPlano = { a: Math.random() * 0, b: Math.random() * 0 };
+      const celulaPlano = { a: 0, b: 1 };
       const celulaPlanoFuturo = { a: 0, b: 0 };
       simulacao.plano[l][c] = celulaPlano; // Número aleatório entre 0 e 0.999...
       simulacao.planoFuturo[l][c] = celulaPlanoFuturo;
@@ -83,7 +84,7 @@ export default function App() {
   }
 
   //Testes
-  simulacao.plano[Math.floor(LINHAS / 2)][Math.floor(COLUNAS / 2)].a = 10;
+  // simulacao.plano[Math.floor(LINHAS / 2)][Math.floor(COLUNAS / 2)].a = 10;
 
   // Desenha na tela
   const draw = (ctx, t) => {
@@ -101,8 +102,11 @@ export default function App() {
     for (let l = 0; l < LINHAS; l++) {
       for (let c = 0; c < COLUNAS; c++) {
         let intensidadeA = simulacao.plano[l][c].a;
-        ctx.fillStyle = `hsl(${(1 - intensidadeA) * 100}deg, 100%, 50%)`;
-        somaIntensidade += intensidadeA;
+        let intensidadeB = simulacao.plano[l][c].b;
+        ctx.fillStyle = `hsl(${(1 - intensidadeA) * 100}deg, 100%, ${
+          intensidadeB * 100
+        }%)`;
+        somaIntensidade += intensidadeB;
         ctx.fillRect(c * TAMANHO, l * TAMANHO, TAMANHO, TAMANHO);
       }
     }
@@ -189,13 +193,24 @@ function difusao(plano, planoFuturo, dt) {
   for (let l = 0; l < LINHAS; l++) {
     for (let c = 0; c < COLUNAS; c++) {
       const intensidadeA = plano[l][c].a;
+      const intensidadeB = plano[l][c].b;
       const intensidadeAFutura =
         intensidadeA +
-        (fatorDifusao * calculaAcrescimoIntensidade(plano, l, c, "a") -
-          fatorDecaimento * intensidadeA) *
+        (fatorDifusao["a"] * calculaAcrescimoIntensidade(plano, l, c, "a") -
+          intensidadeA * intensidadeB * intensidadeB +
+          fatorAlimentacao * (1 - intensidadeA)) *
           dt;
+      const intensidadeBFutura =
+        intensidadeB +
+        (fatorDifusao["b"] * calculaAcrescimoIntensidade(plano, l, c, "b") +
+          intensidadeA * intensidadeB * intensidadeB -
+          (fatorDecaimento + fatorAlimentacao) * intensidadeB) *
+          dt;
+      // console.log(intensidadeBFutura);
       if (intensidadeAFutura > 0) planoFuturo[l][c].a = intensidadeAFutura;
       else planoFuturo[l][c].a = 0;
+      if (intensidadeBFutura > 0) planoFuturo[l][c].b = intensidadeBFutura;
+      else planoFuturo[l][c].b = 0;
     }
   }
 }
