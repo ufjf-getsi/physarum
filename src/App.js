@@ -2,10 +2,13 @@ import React from "react";
 import Canvas from "./components/Canvas/Canvas";
 import "./App.css";
 
-// Tamanho da matriz de plano
+// Dimensões do plano
 const LINHAS = 20;
 const COLUNAS = 50;
 const TAMANHO = 10;
+
+// Controle de animação
+let animacaoPermitida = true;
 
 export default function App() {
   let plano = [];
@@ -50,7 +53,7 @@ export default function App() {
     plano[l] = [];
     planoFuturo[l] = [];
     for (let c = 0; c < COLUNAS; c++) {
-      plano[l][c] = Math.random() * 0; // Número aleatório entre 0 e 0.999...
+      plano[l][c] = Math.random(); // Número aleatório entre 0 e 0.999...
       planoFuturo[l][c] = plano[l][c];
     }
   }
@@ -65,7 +68,8 @@ export default function App() {
     if (t0 === null) {
       t0 = t;
     }
-    const dt = (t - t0) / 1000; // Intervalo entre tempo atual e anterior
+    let dt = (t - t0) / 1000; // Intervalo entre tempo atual e anterior
+    if (!animacaoPermitida) dt = 0;
 
     // Limpa desenho anterior
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
@@ -80,19 +84,11 @@ export default function App() {
       }
     }
 
+    // Exibe concentração total
     ctx.fillStyle = "black";
     ctx.fillText(somaIntensidade, 3 * 10, 3 * 10 + 10);
 
-    // Escreve valores aproximados de cada célula
-    /*
-    for (let l = 0; l < LINHAS; l++) {
-      for (let c = 0; c < COLUNAS; c++) {
-        ctx.fillStyle = "black";
-        ctx.fillText((plano[l][c] * 10).toFixed(0), c * 10, l * 10 + 10);
-      }
-    }*/
-
-    // Difusão da concetração
+    // Difusão da concentração
     difusao(plano, planoFuturo, dt);
     atualizaPlano(plano, planoFuturo);
 
@@ -103,14 +99,28 @@ export default function App() {
   return (
     <div className="app">
       <div className="app-container">
-        <Canvas
-          draw={draw}
-          width={COLUNAS * TAMANHO}
-          height={LINHAS * TAMANHO}
-          handleMouseMove={handleMouseMove}
-          handleMouseDown={handleMouseDown}
-          handleTouchMove={handleTouchMove}
-        />
+        <div>
+          <Canvas
+            draw={draw}
+            width={COLUNAS * TAMANHO}
+            height={LINHAS * TAMANHO}
+            handleMouseMove={handleMouseMove}
+            handleMouseDown={handleMouseDown}
+            handleTouchMove={handleTouchMove}
+            animacaoPermitida={animacaoPermitida}
+          />
+        </div>
+        <div>
+          <button
+            onClick={function (e) {
+              if (animacaoPermitida) e.currentTarget.innerText = "Continuar";
+              else e.currentTarget.innerText = "Pausar";
+              animacaoPermitida = !animacaoPermitida;
+            }}
+          >
+            Pausar
+          </button>
+        </div>
       </div>
     </div>
   );
