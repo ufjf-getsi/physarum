@@ -4,9 +4,10 @@ import "./App.css";
 import Formulario from "./components/Formulario/Formulario";
 
 // Dimensões do plano
-const LINHAS = 20;
-const COLUNAS = 200;
+const LINHAS = 50;
+const COLUNAS = 50;
 const TAMANHO = 10;
+const simulacao = { plano: [], planoFuturo: [] };
 
 // Controle de animação
 let animacaoPermitida = true;
@@ -16,8 +17,6 @@ let fatorDecaimento = 0.06;
 let fatorDifusao = 1.05;
 
 export default function App() {
-  let plano = [];
-  let planoFuturo = [];
   let t0 = null; // Tempo inicial
   let desenhoPermitido = false;
 
@@ -56,8 +55,6 @@ export default function App() {
     );
     fatorDecaimento = inputValues[0];
     fatorDifusao = inputValues[1];
-
-    console.log(inputValues);
   };
 
   function depositaIntensidade(e) {
@@ -69,23 +66,24 @@ export default function App() {
     const y = (e.clientY - caixa.top) * escalaY;
     const l = Math.floor(y / TAMANHO);
     const c = Math.floor(x / TAMANHO);
-    if (l >= 0 && l < LINHAS && c >= 0 && c < COLUNAS) plano[l][c] = 1;
+    if (l >= 0 && l < LINHAS && c >= 0 && c < COLUNAS)
+      simulacao.plano[l][c].a = 1;
   }
 
   // Preenche o plano com valores aleatórios
   for (let l = 0; l < LINHAS; l++) {
-    plano[l] = [];
-    planoFuturo[l] = [];
+    simulacao.plano[l] = [];
+    simulacao.planoFuturo[l] = [];
     for (let c = 0; c < COLUNAS; c++) {
-      plano[l][c] = Math.random(); // Número aleatório entre 0 e 0.999...
-      planoFuturo[l][c] = plano[l][c];
+      const celulaPlano = { a: Math.random() * 0, b: Math.random() * 0 };
+      const celulaPlanoFuturo = { a: 0, b: 0 };
+      simulacao.plano[l][c] = celulaPlano; // Número aleatório entre 0 e 0.999...
+      simulacao.planoFuturo[l][c] = celulaPlanoFuturo;
     }
   }
 
   //Testes
-  plano[Math.floor(LINHAS / 2)][Math.floor(COLUNAS / 2)] = 10;
-  //plano[0][0] = 1;
-  //plano[7][3] = 0;
+  simulacao.plano[Math.floor(LINHAS / 2)][Math.floor(COLUNAS / 2)].a = 10;
 
   // Desenha na tela
   const draw = (ctx, t) => {
@@ -102,19 +100,23 @@ export default function App() {
     // Desenha na tela conforme os valores do plano
     for (let l = 0; l < LINHAS; l++) {
       for (let c = 0; c < COLUNAS; c++) {
-        ctx.fillStyle = `hsl(${(1 - plano[l][c]) * 100}deg, 100%, 50%)`;
-        somaIntensidade += plano[l][c];
+        let intensidadeA = simulacao.plano[l][c].a;
+        ctx.fillStyle = `hsl(${(1 - intensidadeA) * 100}deg, 100%, 50%)`;
+        somaIntensidade += intensidadeA;
         ctx.fillRect(c * TAMANHO, l * TAMANHO, TAMANHO, TAMANHO);
       }
     }
-
     // Exibe concentração total
     ctx.fillStyle = "black";
     ctx.fillText(somaIntensidade, 3 * 10, 3 * 10 + 10);
 
     // Difusão da concentração
-    difusao(plano, planoFuturo, dt);
-    atualizaPlano(plano, planoFuturo);
+    difusao(simulacao.plano, simulacao.planoFuturo, dt);
+
+    // Troca de estado
+    const aux = simulacao.plano;
+    simulacao.plano = simulacao.planoFuturo;
+    simulacao.planoFuturo = aux;
 
     // Define tempo inicial da próxima animação como o tempo atual
     t0 = t;
@@ -140,45 +142,45 @@ export default function App() {
   );
 }
 
-function calculaAcrescimoIntensidade(plano, l, c) {
+function calculaAcrescimoIntensidade(plano, l, c, feromonio) {
   let pesoOrtog = 0.2;
   let pesoDiag = 0.05;
   let remocao = 0;
 
   let intensidadeRedor = 0;
   if (l - 1 >= 0) {
-    intensidadeRedor += plano[l - 1][c] * pesoOrtog;
+    intensidadeRedor += plano[l - 1][c][feromonio] * pesoOrtog;
     remocao += pesoOrtog;
   }
   if (l + 1 < LINHAS) {
-    intensidadeRedor += plano[l + 1][c] * pesoOrtog;
+    intensidadeRedor += plano[l + 1][c][feromonio] * pesoOrtog;
     remocao += pesoOrtog;
   }
   if (c - 1 >= 0) {
-    intensidadeRedor += plano[l][c - 1] * pesoOrtog;
+    intensidadeRedor += plano[l][c - 1][feromonio] * pesoOrtog;
     remocao += pesoOrtog;
   }
   if (c + 1 < COLUNAS) {
-    intensidadeRedor += plano[l][c + 1] * pesoOrtog;
+    intensidadeRedor += plano[l][c + 1][feromonio] * pesoOrtog;
     remocao += pesoOrtog;
   }
   if (l - 1 >= 0 && c - 1 >= 0) {
-    intensidadeRedor += plano[l - 1][c - 1] * pesoDiag;
+    intensidadeRedor += plano[l - 1][c - 1][feromonio] * pesoDiag;
     remocao += pesoDiag;
   }
   if (l - 1 >= 0 && c + 1 < COLUNAS) {
-    intensidadeRedor += plano[l - 1][c + 1] * pesoDiag;
+    intensidadeRedor += plano[l - 1][c + 1][feromonio] * pesoDiag;
     remocao += pesoDiag;
   }
   if (l + 1 < LINHAS && c - 1 >= 0) {
-    intensidadeRedor += plano[l + 1][c - 1] * pesoDiag;
+    intensidadeRedor += plano[l + 1][c - 1][feromonio] * pesoDiag;
     remocao += pesoDiag;
   }
   if (l + 1 < LINHAS && c + 1 < COLUNAS) {
-    intensidadeRedor += plano[l + 1][c + 1] * pesoDiag;
+    intensidadeRedor += plano[l + 1][c + 1][feromonio] * pesoDiag;
     remocao += pesoDiag;
   }
-  intensidadeRedor += plano[l][c] * -1 * remocao;
+  intensidadeRedor += plano[l][c][feromonio] * -1 * remocao;
 
   return intensidadeRedor;
 }
@@ -186,27 +188,14 @@ function calculaAcrescimoIntensidade(plano, l, c) {
 function difusao(plano, planoFuturo, dt) {
   for (let l = 0; l < LINHAS; l++) {
     for (let c = 0; c < COLUNAS; c++) {
-      const elemento = plano[l][c];
-      planoFuturo[l][c] =
-        elemento +
-        (fatorDifusao * calculaAcrescimoIntensidade(plano, l, c) -
-          fatorDecaimento * elemento) *
+      const intensidadeA = plano[l][c].a;
+      const intensidadeAFutura =
+        intensidadeA +
+        (fatorDifusao * calculaAcrescimoIntensidade(plano, l, c, "a") -
+          fatorDecaimento * intensidadeA) *
           dt;
-      if (planoFuturo[l][c] < 0) {
-        planoFuturo[l][c] = 0;
-      }
-    }
-  }
-}
-
-function atualizaPlano(plano, planoFuturo) {
-  const aux = [];
-  for (let l = 0; l < LINHAS; l++) {
-    aux[l] = [];
-    for (let c = 0; c < COLUNAS; c++) {
-      aux[l][c] = plano[l][c];
-      plano[l][c] = planoFuturo[l][c];
-      planoFuturo[l][c] = aux[l][c];
+      if (intensidadeAFutura > 0) planoFuturo[l][c].a = intensidadeAFutura;
+      else planoFuturo[l][c].a = 0;
     }
   }
 }
