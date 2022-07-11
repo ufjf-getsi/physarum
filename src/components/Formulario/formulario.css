@@ -23,3 +23,11 @@ form.formulario div.grupo-input {
 form.formulario div.grupo-input label {
   white-space: nowrap;
 }
+
+.painel-botoes-controle > div {
+  flex: 1 1 0px;
+}
+
+.grupo-radio {
+  font-size: calc(0.25em + 1vmin);
+}

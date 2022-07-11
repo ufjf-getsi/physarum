@@ -7,9 +7,7 @@ import Simulador from "./Simulador";
 
 const simulador = new Simulador(50, 50);
 
-
 export default function App() {
-
   // Gerenciadores de eventos
   const handleMouseMove = (event) => {
     event.preventDefault();
@@ -32,43 +30,54 @@ export default function App() {
     }
   };
   const handleClick = (event) => {
-    if (simulador.animacaoPermitida) {
-      event.currentTarget.innerText = "Continuar";
+    const botaoId = event.target.id;
+    switch (botaoId) {
+      case "botaoPause":
+        if (simulador.animacaoPermitida) {
+          event.currentTarget.innerText = "Continuar";
+        } else {
+          event.currentTarget.innerText = "Pausar";
+        }
+        simulador.animacaoPermitida = !simulador.animacaoPermitida;
+        break;
+
+      case "botaoReiniciar":
+        simulador.inicializarComValoresPadrao();
+        break;
+
+      default:
     }
-    else {
-      event.currentTarget.innerText = "Pausar";
-    }
-    simulador.animacaoPermitida = !simulador.animacaoPermitida;
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    const formInputs = event.target.querySelectorAll("input");
-    const inputValues = Array.from(formInputs, (x) => x.value);
-    simulador.fatorAdicao = Number(inputValues[0]);
-    simulador.fatorDecaimento = Number(inputValues[1]);
-    simulador.fatorDifusao.a = Number(inputValues[2]);
-    simulador.fatorDifusao.b = Number(inputValues[3]);
-    let linhasForm = parseInt(inputValues[4]);
-    let colunasForm = parseInt(inputValues[5]);
+    const formDados = new FormData(event.target);
+    const formProps = Object.fromEntries(formDados);
+    simulador.fatorAdicao = Number(formProps.fatorAdicao);
+    simulador.fatorDecaimento = Number(formProps.fatorDecaimento);
+    simulador.fatorDifusao.a = Number(formProps.fatorDifusaoA);
+    simulador.fatorDifusao.b = Number(formProps.fatorDifusaoB);
+    simulador.valoresPadrao.a = formProps.padraoA;
+    simulador.valoresPadrao.b = formProps.padraoB;
+    let linhasForm = parseInt(formProps.qtdLinhas);
+    let colunasForm = parseInt(formProps.qtdColunas);
+    let tamanhoForm = parseInt(formProps.tamanho);
 
-    if (linhasForm !== simulador.LINHAS || colunasForm !== simulador.COLUNAS) {
-      simulador.mudarTamanho(linhasForm, colunasForm);
-      
+    if (
+      linhasForm !== simulador.LINHAS ||
+      colunasForm !== simulador.COLUNAS ||
+      tamanhoForm != simulador.TAMANHO
+    ) {
+      simulador.mudarTamanho(linhasForm, colunasForm, tamanhoForm);
+
       const canvas = document.querySelector("canvas");
-      canvas.setAttribute("width", simulador.COLUNAS * 10);
-      canvas.setAttribute("height", simulador.LINHAS * 10);
+      canvas.setAttribute("width", simulador.COLUNAS * simulador.TAMANHO);
+      canvas.setAttribute("height", simulador.LINHAS * simulador.TAMANHO);
     }
   };
 
-
-
-
-
   //Testes
   // simulacao.plano[Math.floor(LINHAS / 2)][Math.floor(COLUNAS / 2)].a = 10;
-
-
 
   return (
     <div className="app">
@@ -99,7 +108,3 @@ export default function App() {
     </div>
   );
 }
-
-
-
-

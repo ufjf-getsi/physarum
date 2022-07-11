@@ -2,27 +2,48 @@ export default class Simulador {
   constructor(linhas = 50, colunas = 50) {
     this.t0 = null; // Tempo inicial
     this.desenhoPermitido = false;
+
     // Controle de animação
     this.animacaoPermitida = true;
 
     // Dimensões do plano
     this.LINHAS = linhas;
     this.COLUNAS = colunas;
-    this.TAMANHO = 10;
-    
+    this.TAMANHO = 7;
+
     // Controle do modelo
     this.fatorDecaimento = 0.062;
     this.fatorAdicao = 0.055;
     this.fatorDifusao = { a: 1, b: 0.5 };
-    
+    this.valoresPadrao = {
+      aa: "A",
+      bb: "A",
+      set a(x) {
+        if (isNaN(x)) this.aa = x;
+        else this.aa = parseInt(x);
+      },
+      set b(x) {
+        if (isNaN(x)) this.bb = x;
+        else this.bb = parseInt(x);
+      },
+      get a() {
+        if (typeof this.aa === "number") return this.aa;
+        else return Math.random();
+      },
+      get b() {
+        if (typeof this.bb === "number") return this.bb;
+        else return Math.random();
+      },
+    };
+
     // Referências de elementos
     this.infoA = null;
     this.infoB = null;
 
-    this.inicializarComAleatorios();
+    this.inicializarComValoresPadrao();
   }
 
-  inicializarComAleatorios() {
+  inicializarComValoresPadrao() {
     this.plano = [];
     this.planoFuturo = [];
     // Preenche o plano com valores aleatórios
@@ -30,7 +51,10 @@ export default class Simulador {
       this.plano[l] = [];
       this.planoFuturo[l] = [];
       for (let c = 0; c < this.COLUNAS; c++) {
-        const celulaPlano = { a: Math.random(), b: Math.random() }; // Número aleatório entre 0 e 0.999...
+        const celulaPlano = {
+          a: this.valoresPadrao.a,
+          b: this.valoresPadrao.b,
+        }; // Número aleatório entre 0 e 0.999...
         const celulaPlanoFuturo = { a: 0, b: 0 };
         this.plano[l][c] = celulaPlano;
         this.planoFuturo[l][c] = celulaPlanoFuturo;
@@ -52,14 +76,15 @@ export default class Simulador {
     }
   }
 
-
   // Desenha na tela
   draw(ctx, t) {
     if (this.t0 === null) {
       this.t0 = t;
     }
     let dt = (t - this.t0) / 1000; // Intervalo entre tempo atual e anterior
-    if (!this.animacaoPermitida) { dt = 0; }
+    if (!this.animacaoPermitida) {
+      dt = 0;
+    }
 
     // Limpa desenho anterior
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
@@ -74,18 +99,21 @@ export default class Simulador {
         somaIntensidadeA += intensidadeA;
         somaIntensidadeB += intensidadeB;
 
-        ctx.fillStyle = `hsla(${(1 - intensidadeA) * 100}deg, 100%, 50%, 50%)`;
-        ctx.fillRect(c * this.TAMANHO, l * this.TAMANHO, this.TAMANHO, this.TAMANHO);
-        ctx.fillStyle = `hsla(${(1 - intensidadeA) * 100}deg, 100%, 50%, 50%)`;
-        ctx.fillRect(c * this.TAMANHO, l * this.TAMANHO, this.TAMANHO, this.TAMANHO);
+        ctx.fillStyle = `hsl(${(1 - intensidadeA) * 100}deg, 100%, 50%)`;
+        ctx.fillRect(
+          c * this.TAMANHO,
+          l * this.TAMANHO,
+          this.TAMANHO,
+          this.TAMANHO
+        );
       }
     }
     // Exibe concentração total
     document.getElementById("infoFerA").innerText = somaIntensidadeA.toFixed(2);
     document.getElementById("infoFerB").innerText = somaIntensidadeB.toFixed(2);
 
-    // Difusão da concentração
-    this.difusao(this.plano, this.planoFuturo, dt);
+    // Calcula reação
+    this.reacao(this.plano, this.planoFuturo, dt);
 
     // Troca de estado
     const aux = this.plano;
@@ -94,7 +122,7 @@ export default class Simulador {
 
     // Define tempo inicial da próxima animação como o tempo atual
     this.t0 = t;
-  };
+  }
 
   calculaAcrescimoIntensidade(plano, l, c, feromonio) {
     let pesoOrtog = 0.2;
@@ -139,23 +167,25 @@ export default class Simulador {
     return intensidadeRedor;
   }
 
-  difusao(plano, planoFuturo, dt) {
+  reacao(plano, planoFuturo, dt) {
     for (let l = 0; l < this.LINHAS; l++) {
       for (let c = 0; c < this.COLUNAS; c++) {
         const intensidadeA = plano[l][c].a;
         const intensidadeB = plano[l][c].b;
         const intensidadeAFutura =
           intensidadeA +
-          (this.fatorDifusao["a"] * this.calculaAcrescimoIntensidade(plano, l, c, "a") -
+          (this.fatorDifusao["a"] *
+            this.calculaAcrescimoIntensidade(plano, l, c, "a") -
             intensidadeA * intensidadeB * intensidadeB +
             this.fatorAdicao * (1 - intensidadeA)) *
-          dt;
+            dt;
         const intensidadeBFutura =
           intensidadeB +
-          (this.fatorDifusao["b"] * this.calculaAcrescimoIntensidade(plano, l, c, "b") +
+          (this.fatorDifusao["b"] *
+            this.calculaAcrescimoIntensidade(plano, l, c, "b") +
             intensidadeA * intensidadeB * intensidadeB -
             (this.fatorDecaimento + this.fatorAdicao) * intensidadeB) *
-          dt;
+            dt;
         if (intensidadeAFutura > 0) planoFuturo[l][c].a = intensidadeAFutura;
         else planoFuturo[l][c].a = 0;
         if (intensidadeBFutura > 0) planoFuturo[l][c].b = intensidadeBFutura;
@@ -164,9 +194,10 @@ export default class Simulador {
     }
   }
 
-  mudarTamanho(linhas, colunas) {
+  mudarTamanho(linhas, colunas, tamanho) {
     this.LINHAS = linhas;
     this.COLUNAS = colunas;
-    this.inicializarComAleatorios();
+    this.TAMANHO = tamanho;
+    this.inicializarComValoresPadrao();
   }
 }
