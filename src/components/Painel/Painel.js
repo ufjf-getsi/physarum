@@ -3,16 +3,22 @@ import "./painel.css";
 import Formulario from "./../../components/Formulario/Formulario";
 
 export default function Painel(props) {
-  const { handleClick, handleSubmit, ...rest } = props;
+  const { handleClick, handleSubmit, handleChange, ...rest } = props;
 
   return (
     <div className="linha painel-inferior">
       <div className="coluna">
         <div className="grupo-input">
           <label htmlFor="camadaSelect">Camada</label>
-          <select id="camadaSelect" name="camada" defaultValue={"A"}>
-            <option value="A">A</option>
-            <option value="B">B</option>
+          <select
+            id="camadaSelect"
+            className="camada-select"
+            name="camada"
+            defaultValue={"A"}
+            onChange={(event) => handleChange(event)}
+          >
+            <option value="a">A</option>
+            <option value="b">B</option>
           </select>
         </div>
       </div>

@@ -1,10 +1,10 @@
 export default class Simulador {
-  constructor(linhas = 50, colunas = 50) {
+  constructor(linhas = 50, colunas = 5) {
+    // Controle da animação
     this.t0 = null; // Tempo inicial
-    this.desenhoPermitido = false;
-
-    // Controle de animação
     this.animacaoPermitida = true;
+    this.desenhoPermitido = false;
+    this.camadaExibida = "a";
 
     // Dimensões do plano
     this.LINHAS = linhas;
@@ -35,10 +35,6 @@ export default class Simulador {
         else return Math.random();
       },
     };
-
-    // Referências de elementos
-    this.infoA = null;
-    this.infoB = null;
 
     this.inicializarComValoresPadrao();
   }
@@ -72,7 +68,7 @@ export default class Simulador {
     const l = Math.floor(y / this.TAMANHO);
     const c = Math.floor(x / this.TAMANHO);
     if (l >= 0 && l < this.LINHAS && c >= 0 && c < this.COLUNAS) {
-      this.plano[l][c].a = 1;
+      this.plano[l][c][this.camadaExibida] = 1;
     }
   }
 
@@ -89,17 +85,19 @@ export default class Simulador {
     // Limpa desenho anterior
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
-    let somaIntensidadeA = 0;
-    let somaIntensidadeB = 0;
+    let somaIntensidade = { a: 0, b: 0 };
     // Desenha na tela conforme os valores do plano
     for (let l = 0; l < this.LINHAS; l++) {
       for (let c = 0; c < this.COLUNAS; c++) {
-        let intensidadeA = this.plano[l][c].a;
-        let intensidadeB = this.plano[l][c].b;
-        somaIntensidadeA += intensidadeA;
-        somaIntensidadeB += intensidadeB;
+        const intensidade = {};
+        intensidade.a = this.plano[l][c].a;
+        intensidade.b = this.plano[l][c].b;
+        somaIntensidade.a += intensidade.a;
+        somaIntensidade.b += intensidade.b;
 
-        ctx.fillStyle = `hsl(${(1 - intensidadeA) * 100}deg, 100%, 50%)`;
+        ctx.fillStyle = `hsl(${
+          (1 - intensidade[this.camadaExibida]) * 100
+        }deg, 100%, 50%)`;
         ctx.fillRect(
           c * this.TAMANHO,
           l * this.TAMANHO,
@@ -109,8 +107,10 @@ export default class Simulador {
       }
     }
     // Exibe concentração total
-    document.getElementById("infoFerA").innerText = somaIntensidadeA.toFixed(2);
-    document.getElementById("infoFerB").innerText = somaIntensidadeB.toFixed(2);
+    document.getElementById("infoFerA").innerText =
+      somaIntensidade.a.toFixed(2);
+    document.getElementById("infoFerB").innerText =
+      somaIntensidade.b.toFixed(2);
 
     // Calcula reação
     this.reacao(this.plano, this.planoFuturo, dt);
@@ -170,21 +170,22 @@ export default class Simulador {
   reacao(plano, planoFuturo, dt) {
     for (let l = 0; l < this.LINHAS; l++) {
       for (let c = 0; c < this.COLUNAS; c++) {
-        const intensidadeA = plano[l][c].a;
-        const intensidadeB = plano[l][c].b;
+        const intensidade = {};
+        intensidade.a = this.plano[l][c].a;
+        intensidade.b = this.plano[l][c].b;
         const intensidadeAFutura =
-          intensidadeA +
+          intensidade.a +
           (this.fatorDifusao["a"] *
             this.calculaAcrescimoIntensidade(plano, l, c, "a") -
-            intensidadeA * intensidadeB * intensidadeB +
-            this.fatorAdicao * (1 - intensidadeA)) *
+            intensidade.a * intensidade.b * intensidade.b +
+            this.fatorAdicao * (1 - intensidade.a)) *
             dt;
         const intensidadeBFutura =
-          intensidadeB +
+          intensidade.b +
           (this.fatorDifusao["b"] *
             this.calculaAcrescimoIntensidade(plano, l, c, "b") +
-            intensidadeA * intensidadeB * intensidadeB -
-            (this.fatorDecaimento + this.fatorAdicao) * intensidadeB) *
+            intensidade.a * intensidade.b * intensidade.b -
+            (this.fatorDecaimento + this.fatorAdicao) * intensidade.b) *
             dt;
         if (intensidadeAFutura > 0) planoFuturo[l][c].a = intensidadeAFutura;
         else planoFuturo[l][c].a = 0;

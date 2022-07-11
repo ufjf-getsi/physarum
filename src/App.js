@@ -1,5 +1,6 @@
 import React from "react";
 import "./App.css";
+import InfoDisplay from "./components/InfoDisplay/InfoDisplay";
 import Canvas from "./components/Canvas/Canvas";
 import Painel from "./components/Painel/Painel";
 
@@ -48,7 +49,6 @@ export default function App() {
       default:
     }
   };
-
   const handleSubmit = (event) => {
     event.preventDefault();
     const formDados = new FormData(event.target);
@@ -75,6 +75,9 @@ export default function App() {
       canvas.setAttribute("height", simulador.LINHAS * simulador.TAMANHO);
     }
   };
+  const handleChange = (event) => {
+    simulador.camadaExibida = event.target.value;
+  };
 
   //Testes
   // simulacao.plano[Math.floor(LINHAS / 2)][Math.floor(COLUNAS / 2)].a = 10;
@@ -93,17 +96,12 @@ export default function App() {
             animacaoPermitida={simulador.animacaoPermitida}
           />
         </div>
-        <div className="linha">
-          <div className="grupo-info">
-            <label htmlFor="ferA">A:</label>
-            <p id="infoFerA">0</p>
-          </div>
-          <div className="grupo-info">
-            <label htmlFor="ferB">B:</label>
-            <p id="infoFerB">0</p>
-          </div>
-        </div>
-        <Painel handleClick={handleClick} handleSubmit={handleSubmit} />
+        <InfoDisplay />
+        <Painel
+          handleClick={handleClick}
+          handleSubmit={handleSubmit}
+          handleChange={handleChange}
+        />
       </div>
     </div>
   );
