@@ -9,18 +9,18 @@ form.formulario {
   flex-direction: column;
 }
 
-form.formulario .configuracoes {
+.configuracoes {
   margin-bottom: 5%;
 }
 
-form.formulario div.grupo-input {
+div.grupo-input {
   display: flex;
   flex-direction: column;
   min-width: fit-content;
   padding: 0.1em 0.25em 0.1em 0.25em;
 }
 
-form.formulario div.grupo-input label {
+div.grupo-input label {
   white-space: nowrap;
 }
 

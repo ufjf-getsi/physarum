@@ -1,7 +1,7 @@
 import React from "react";
-import Canvas from "./components/Canvas/Canvas";
 import "./App.css";
-import Formulario from "./components/Formulario/Formulario";
+import Canvas from "./components/Canvas/Canvas";
+import Painel from "./components/Painel/Painel";
 
 import Simulador from "./Simulador";
 
@@ -103,7 +103,7 @@ export default function App() {
             <p id="infoFerB">0</p>
           </div>
         </div>
-        <Formulario handleClick={handleClick} handleSubmit={handleSubmit} />
+        <Painel handleClick={handleClick} handleSubmit={handleSubmit} />
       </div>
     </div>
   );
