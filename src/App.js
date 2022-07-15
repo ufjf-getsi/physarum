@@ -36,13 +36,7 @@ export default function App() {
     const botaoId = event.target.id;
     switch (botaoId) {
       case "botaoPause":
-        if (simulador.animacaoPermitida) {
-          event.currentTarget.innerText = "Continuar";
-        } else {
-          event.currentTarget.innerText = "Pausar";
-        }
-        simulador.animacaoPermitida = !simulador.animacaoPermitida;
-        setAnimate(simulador.animacaoPermitida);
+        setAnimate(!animate);
         break;
 
       case "botaoReiniciar":
@@ -101,6 +95,7 @@ export default function App() {
         </div>
         <InfoDisplay />
         <Painel
+          animate={animate}
           handleClick={handleClick}
           handleSubmit={handleSubmit}
           handleChange={handleChange}
