@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./App.css";
 import InfoDisplay from "./components/InfoDisplay/InfoDisplay";
-import AnimationScreen from "./components/Canvas/AnimationScreen";
+import AnimationScreen from "./components/AnimationScreen/AnimationScreen";
 import Painel from "./components/Painel/Painel";
 
 import Simulador from "./Simulador";
