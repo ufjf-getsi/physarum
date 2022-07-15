@@ -9,17 +9,18 @@ export default function Canvas({handleAnimationStep, handleDraw,
   handleMouseDown,
   handleTouchMove }) {
   const canvasRef = useRef(null);
-
+  
+  
   useEffect(() => {
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
     let animationFrameId;
     if (animate) {
-      const render = (t) => {
-        handleAnimationStep(context, t);
+      const render = (time) => {
+        handleAnimationStep(context, time);
         animationFrameId = window.requestAnimationFrame(render);
       };
-      render(0);
+      animationFrameId = window.requestAnimationFrame(render);
     } else {
       handleDraw(context);
       window.cancelAnimationFrame(animationFrameId);
