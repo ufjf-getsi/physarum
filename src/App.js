@@ -1,14 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import "./App.css";
 import InfoDisplay from "./components/InfoDisplay/InfoDisplay";
-import Canvas from "./components/Canvas/Canvas";
+import AnimationScreen from "./components/Canvas/AnimationScreen";
 import Painel from "./components/Painel/Painel";
 
 import Simulador from "./Simulador";
 
 const simulador = new Simulador(50, 50);
+simulador.simulacaoPermitida = false;
 
 export default function App() {
+  const [animate, setAnimate] = useState(false);
   // Gerenciadores de eventos
   const handleMouseMove = (event) => {
     event.preventDefault();
@@ -40,6 +42,7 @@ export default function App() {
           event.currentTarget.innerText = "Pausar";
         }
         simulador.animacaoPermitida = !simulador.animacaoPermitida;
+        setAnimate(simulador.animacaoPermitida);
         break;
 
       case "botaoReiniciar":
@@ -86,14 +89,14 @@ export default function App() {
     <div className="app">
       <div className="app-container">
         <div>
-          <Canvas
-            draw={simulador.draw.bind(simulador)}
+          <AnimationScreen
+            animate={animate}
             width={simulador.COLUNAS * simulador.TAMANHO}
             height={simulador.LINHAS * simulador.TAMANHO}
+            handlerDraw={simulador.draw.bind(simulador)}
             handleMouseMove={handleMouseMove}
             handleMouseDown={handleMouseDown}
             handleTouchMove={handleTouchMove}
-            animacaoPermitida={simulador.animacaoPermitida}
           />
         </div>
         <InfoDisplay />

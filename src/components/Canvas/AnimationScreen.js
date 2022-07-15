@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from "react";
-import "./canvas.css";
+import "./AnimationScreen.css";
 
 export default function Canvas({ handlerDraw,
   animate,
