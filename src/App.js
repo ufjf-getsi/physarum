@@ -82,7 +82,8 @@ export default function App() {
             animate={animate}
             width={simulador.COLUNAS * simulador.TAMANHO}
             height={simulador.LINHAS * simulador.TAMANHO}
-            handleDraw={simulador.doAnimationStep.bind(simulador)}
+            handleAnimationStep={simulador.doAnimationStep.bind(simulador)}
+            handleDraw={simulador.draw.bind(simulador)}
             handleMouseMove={handleMouseMove}
             handleMouseDown={handleMouseDown}
             handleTouchMove={handleTouchMove}

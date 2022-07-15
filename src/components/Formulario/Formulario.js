@@ -12,7 +12,7 @@ export default function Formulario({animate, handleClickPlayPause, handleClickRe
             className="botao-pause"
             onClick={handleClickPlayPause}
           >
-            {animate?"Pausar":"Continuar"}
+            {animate?"⏸ Pausar":"▶ Continuar"}
           </button>
         </div>
         <div className="coluna">

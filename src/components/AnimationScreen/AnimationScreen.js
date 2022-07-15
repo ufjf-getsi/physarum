@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import "./AnimationScreen.css";
 
-export default function Canvas({handleDraw,
+export default function Canvas({handleAnimationStep, handleDraw,
   animate,
   width,
   height,
@@ -16,11 +16,12 @@ export default function Canvas({handleDraw,
     let animationFrameId;
     if (animate) {
       const render = (t) => {
-        handleDraw(context, t);
+        handleAnimationStep(context, t);
         animationFrameId = window.requestAnimationFrame(render);
       };
       render(0);
     } else {
+      handleDraw(context);
       window.cancelAnimationFrame(animationFrameId);
     }
     return () => {
