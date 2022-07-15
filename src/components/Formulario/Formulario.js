@@ -1,7 +1,7 @@
 import React from "react";
 import "./formulario.css";
 
-export default function Formulario({animate, handleClick, handleSubmit }) {
+export default function Formulario({animate, handleClickPlayPause, handleClickReset, handleSubmit }) {
 
   return (
     <div className="config-container">
@@ -10,7 +10,7 @@ export default function Formulario({animate, handleClick, handleSubmit }) {
           <button
             id="botaoPause"
             className="botao-pause"
-            onClick={(event) => handleClick(event)}
+            onClick={handleClickPlayPause}
           >
             {animate?"Pausar":"Continuar"}
           </button>
@@ -19,7 +19,7 @@ export default function Formulario({animate, handleClick, handleSubmit }) {
           <button
             id="botaoReiniciar"
             className="botao-reiniciar"
-            onClick={(event) => handleClick(event)}
+            onClick={handleClickReset}
           >
             Reiniciar
           </button>

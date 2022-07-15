@@ -32,20 +32,15 @@ export default function App() {
       }
     }
   };
-  const handleClick = (event) => {
-    const botaoId = event.target.id;
-    switch (botaoId) {
-      case "botaoPause":
-        setAnimate(!animate);
-        break;
 
-      case "botaoReiniciar":
-        simulador.inicializarComValoresPadrao();
-        break;
-
-      default:
-    }
+  const handleClickPlayPause = (event) => {
+    setAnimate(!animate);
   };
+
+  const handleClickReset = (event) => {
+    simulador.inicializarComValoresPadrao();
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const formDados = new FormData(event.target);
@@ -87,7 +82,7 @@ export default function App() {
             animate={animate}
             width={simulador.COLUNAS * simulador.TAMANHO}
             height={simulador.LINHAS * simulador.TAMANHO}
-            handlerDraw={simulador.draw.bind(simulador)}
+            handleDraw={simulador.draw.bind(simulador)}
             handleMouseMove={handleMouseMove}
             handleMouseDown={handleMouseDown}
             handleTouchMove={handleTouchMove}
@@ -96,7 +91,8 @@ export default function App() {
         <InfoDisplay />
         <Painel
           animate={animate}
-          handleClick={handleClick}
+          handleClickPlayPause={handleClickPlayPause}
+          handleClickReset={handleClickReset}
           handleSubmit={handleSubmit}
           handleChange={handleChange}
         />
