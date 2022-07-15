@@ -1,0 +1,12 @@
+.painel-inferior {
+  width: 100%;
+}
+
+.painel-inferior > div {
+  flex: 1 1 0px;
+}
+
+.camada-select {
+  width: 50%;
+  margin: auto;
+}

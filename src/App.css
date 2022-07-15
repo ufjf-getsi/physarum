@@ -19,11 +19,14 @@
 .linha {
   display: flex;
   flex-direction: row;
+  flex: auto;
+  align-items: center;
 }
 
 .coluna {
   display: flex;
   flex-direction: column;
+  flex: auto;
 }
 
 div.grupo-info {
