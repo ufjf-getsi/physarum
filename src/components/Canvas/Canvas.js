@@ -1,14 +1,33 @@
-import React, { useRef, useEffect } from "react";
-import useCanvas from "./useCanvas";
+import React, { useRef, useEffect, useState } from "react";
 import "./canvas.css";
 
-export default function Canvas({ draw,
+export default function Canvas({ handlerDraw,
+  animate,
   width,
   height,
   handleMouseMove,
   handleMouseDown,
   handleTouchMove }) {
-  const canvasRef = useCanvas(draw);
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const context = canvas.getContext("2d");
+    let animationFrameId;
+    if (animate) {
+      const render = (t) => {
+        handlerDraw(context, t);
+        animationFrameId = window.requestAnimationFrame(render);
+      };
+      render(0);
+    } else {
+      window.cancelAnimationFrame(animationFrameId);
+    }
+    return () => {
+      window.cancelAnimationFrame(animationFrameId);
+    }
+  }, [animate]);
+
 
   return (
     <canvas
