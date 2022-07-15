@@ -2,7 +2,6 @@ export default class Simulador {
   constructor(linhas = 50, colunas = 5) {
     // Controle da animação
     this.t0 = null; // Tempo inicial
-    this.animacaoPermitida = true;
     this.desenhoPermitido = false;
     this.camadaExibida = "a";
 
@@ -72,20 +71,41 @@ export default class Simulador {
     }
   }
 
-  // Desenha na tela
-  draw(ctx, t) {
+  doAnimationStep(ctx, t) {
     if (this.t0 === null) {
       this.t0 = t;
     }
     let dt = (t - this.t0) / 1000; // Intervalo entre tempo atual e anterior
-    if (!this.animacaoPermitida) {
-      dt = 0;
+    if (dt > 3 / 60) {
+      console.log("dt too long: " + dt, "t0: " + this.t0, "t: " + t);
+      dt = 0.0;
+      this.t0 = t;
+      return;
     }
 
+    this.update(ctx, dt);
+    this.draw(ctx, dt);
+    // Define tempo inicial da próxima animação como o tempo atual
+    this.t0 = t;
+  }
+
+  // Atualiza o estado
+  update(ctx, dt) {
+    // Calcula reação
+    this.reacao(this.plano, this.planoFuturo, dt);
+    // Troca de estado
+    const aux = this.plano;
+    this.plano = this.planoFuturo;
+    this.planoFuturo = aux;
+  }
+
+  // Desenha na tela
+  draw(ctx, dt) {
+
+    const somaIntensidade = { a: 0, b: 0 };
     // Limpa desenho anterior
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
-    let somaIntensidade = { a: 0, b: 0 };
     // Desenha na tela conforme os valores do plano
     for (let l = 0; l < this.LINHAS; l++) {
       for (let c = 0; c < this.COLUNAS; c++) {
@@ -95,9 +115,8 @@ export default class Simulador {
         somaIntensidade.a += intensidade.a;
         somaIntensidade.b += intensidade.b;
 
-        ctx.fillStyle = `hsl(${
-          (1 - intensidade[this.camadaExibida]) * 100
-        }deg, 100%, 50%)`;
+        ctx.fillStyle = `hsl(${(1 - intensidade[this.camadaExibida]) * 100
+          }deg, 100%, 50%)`;
         ctx.fillRect(
           c * this.TAMANHO,
           l * this.TAMANHO,
@@ -111,17 +130,6 @@ export default class Simulador {
       somaIntensidade.a.toFixed(2);
     document.getElementById("infoFerB").innerText =
       somaIntensidade.b.toFixed(2);
-
-    // Calcula reação
-    this.reacao(this.plano, this.planoFuturo, dt);
-
-    // Troca de estado
-    const aux = this.plano;
-    this.plano = this.planoFuturo;
-    this.planoFuturo = aux;
-
-    // Define tempo inicial da próxima animação como o tempo atual
-    this.t0 = t;
   }
 
   calculaAcrescimoIntensidade(plano, l, c, feromonio) {
@@ -179,14 +187,14 @@ export default class Simulador {
             this.calculaAcrescimoIntensidade(plano, l, c, "a") -
             intensidade.a * intensidade.b * intensidade.b +
             this.fatorAdicao * (1 - intensidade.a)) *
-            dt;
+          dt;
         const intensidadeBFutura =
           intensidade.b +
           (this.fatorDifusao["b"] *
             this.calculaAcrescimoIntensidade(plano, l, c, "b") +
             intensidade.a * intensidade.b * intensidade.b -
             (this.fatorDecaimento + this.fatorAdicao) * intensidade.b) *
-            dt;
+          dt;
         if (intensidadeAFutura > 0) planoFuturo[l][c].a = intensidadeAFutura;
         else planoFuturo[l][c].a = 0;
         if (intensidadeBFutura > 0) planoFuturo[l][c].b = intensidadeBFutura;
