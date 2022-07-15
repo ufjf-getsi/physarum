@@ -2,16 +2,12 @@ import React, { useRef, useEffect } from "react";
 import useCanvas from "./useCanvas";
 import "./canvas.css";
 
-export default function Canvas(props) {
-  const {
-    draw,
-    width,
-    height,
-    handleMouseMove,
-    handleMouseDown,
-    handleTouchMove,
-    ...rest
-  } = props;
+export default function Canvas({ draw,
+  width,
+  height,
+  handleMouseMove,
+  handleMouseDown,
+  handleTouchMove }) {
   const canvasRef = useCanvas(draw);
 
   return (
