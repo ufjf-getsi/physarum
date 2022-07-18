@@ -1,14 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import "./App.css";
 import InfoDisplay from "./components/InfoDisplay/InfoDisplay";
-import Canvas from "./components/Canvas/Canvas";
+import AnimationScreen from "./components/AnimationScreen/AnimationScreen";
 import Painel from "./components/Painel/Painel";
 
 import Simulador from "./Simulador";
 
 const simulador = new Simulador(50, 50);
+simulador.simulacaoPermitida = false;
 
 export default function App() {
+  const [animate, setAnimate] = useState(false);
   // Gerenciadores de eventos
   const handleMouseMove = (event) => {
     event.preventDefault();
@@ -30,25 +32,15 @@ export default function App() {
       }
     }
   };
-  const handleClick = (event) => {
-    const botaoId = event.target.id;
-    switch (botaoId) {
-      case "botaoPause":
-        if (simulador.animacaoPermitida) {
-          event.currentTarget.innerText = "Continuar";
-        } else {
-          event.currentTarget.innerText = "Pausar";
-        }
-        simulador.animacaoPermitida = !simulador.animacaoPermitida;
-        break;
 
-      case "botaoReiniciar":
-        simulador.inicializarComValoresPadrao();
-        break;
-
-      default:
-    }
+  const handleClickPlayPause = (event) => {
+    setAnimate(!animate);
   };
+
+  const handleClickReset = (event) => {
+    simulador.inicializarComValoresPadrao();
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const formDados = new FormData(event.target);
@@ -86,19 +78,22 @@ export default function App() {
     <div className="app">
       <div className="app-container">
         <div>
-          <Canvas
-            draw={simulador.draw.bind(simulador)}
+          <AnimationScreen
+            animate={animate}
             width={simulador.COLUNAS * simulador.TAMANHO}
             height={simulador.LINHAS * simulador.TAMANHO}
+            handleAnimationStep={simulador.doAnimationStep.bind(simulador)}
+            handleDraw={simulador.draw.bind(simulador)}
             handleMouseMove={handleMouseMove}
             handleMouseDown={handleMouseDown}
             handleTouchMove={handleTouchMove}
-            animacaoPermitida={simulador.animacaoPermitida}
           />
         </div>
         <InfoDisplay />
         <Painel
-          handleClick={handleClick}
+          animate={animate}
+          handleClickPlayPause={handleClickPlayPause}
+          handleClickReset={handleClickReset}
           handleSubmit={handleSubmit}
           handleChange={handleChange}
         />

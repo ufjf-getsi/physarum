@@ -2,8 +2,7 @@ import React from "react";
 import "./painel.css";
 import Formulario from "./../../components/Formulario/Formulario";
 
-export default function Painel(props) {
-  const { handleClick, handleSubmit, handleChange, ...rest } = props;
+export default function Painel({ animate, handleClickPlayPause, handleClickReset, handleSubmit, handleChange }) {
 
   return (
     <div className="linha painel-inferior">
@@ -23,7 +22,11 @@ export default function Painel(props) {
         </div>
       </div>
       <div className="coluna">
-        <Formulario handleClick={handleClick} handleSubmit={handleSubmit} />
+        <Formulario
+          animate={animate}
+          handleClickPlayPause={handleClickPlayPause}
+          handleClickReset={handleClickReset}
+          handleSubmit={handleSubmit} />
       </div>
       <div className="coluna"></div>
     </div>
