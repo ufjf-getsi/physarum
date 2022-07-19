@@ -2,8 +2,13 @@ import React from "react";
 import "./painel.css";
 import Formulario from "./../../components/Formulario/Formulario";
 
-export default function Painel({ animate, handleClickPlayPause, handleClickReset, handleSubmit, handleChange }) {
-
+export default function Painel({
+  animate,
+  handleClickPlayPause,
+  handleClickReset,
+  handleSubmit,
+  handleChange,
+}) {
   return (
     <div className="linha painel-inferior">
       <div className="coluna">
@@ -26,9 +31,18 @@ export default function Painel({ animate, handleClickPlayPause, handleClickReset
           animate={animate}
           handleClickPlayPause={handleClickPlayPause}
           handleClickReset={handleClickReset}
-          handleSubmit={handleSubmit} />
+          handleSubmit={handleSubmit}
+        />
       </div>
-      <div className="coluna"></div>
+      <div className="coluna">
+        <div className="grupo-escala">
+          <div id="escala"></div>
+          <div className="linha">
+            <span>0</span>
+            <span id="infoIntensidadeMaxima">1</span>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

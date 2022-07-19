@@ -1,5 +1,5 @@
 export default class Simulador {
-  constructor(linhas = 50, colunas = 5) {
+  constructor(linhas = 50, colunas = 50) {
     // Controle da animação
     this.t0 = null; // Tempo inicial
     this.desenhoPermitido = false;
@@ -34,6 +34,7 @@ export default class Simulador {
         else return Math.random();
       },
     };
+    this.intensidadeMaxima = { a: 1, b: 1 };
 
     this.inicializarComValoresPadrao();
   }
@@ -102,10 +103,17 @@ export default class Simulador {
   // Desenha na tela
   draw(ctx, dt) {
     const somaIntensidade = { a: 0, b: 0 };
+    let intensidadeMaxInst = { a: 0, b: 0 };
+
     // Limpa desenho anterior
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
+    const infoIntMax = document.getElementById("infoIntensidadeMaxima");
+
     // Desenha na tela conforme os valores do plano
+    // intensidadeMaxInst.a = 0;
+    // intensidadeMaxInst.b = 0;
+    intensidadeMaxInst[this.camadaExibida] = 0;
     for (let l = 0; l < this.LINHAS; l++) {
       for (let c = 0; c < this.COLUNAS; c++) {
         const intensidade = {};
@@ -114,8 +122,22 @@ export default class Simulador {
         somaIntensidade.a += intensidade.a;
         somaIntensidade.b += intensidade.b;
 
+        if (
+          intensidade[this.camadaExibida] >
+          intensidadeMaxInst[this.camadaExibida]
+        )
+          intensidadeMaxInst[this.camadaExibida] =
+            intensidade[this.camadaExibida];
+        // if (intensidade.a > intensidadeMaxInst.a)
+        //   intensidadeMaxInst.a = intensidade.a;
+        // if (intensidade.b > intensidadeMaxInst.b)
+        //   intensidadeMaxInst.b = intensidade.b;
+
         ctx.fillStyle = `hsl(${
-          (1 - intensidade[this.camadaExibida]) * 100
+          (1 -
+            intensidade[this.camadaExibida] /
+              this.intensidadeMaxima[this.camadaExibida]) *
+          100
         }deg, 100%, 50%)`;
         ctx.fillRect(
           c * this.TAMANHO,
@@ -126,10 +148,15 @@ export default class Simulador {
       }
     }
     // Exibe concentração total
-    document.getElementById("infoFerA").innerText =
+    document.getElementById("infoFerA").textContent =
       somaIntensidade.a.toFixed(2);
-    document.getElementById("infoFerB").innerText =
+    document.getElementById("infoFerB").textContent =
       somaIntensidade.b.toFixed(2);
+
+    this.intensidadeMaxima[this.camadaExibida] =
+      intensidadeMaxInst[this.camadaExibida];
+    infoIntMax.textContent =
+      this.intensidadeMaxima[this.camadaExibida].toFixed(2);
   }
 
   calculaAcrescimoIntensidade(plano, l, c, feromonio) {

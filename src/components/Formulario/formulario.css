@@ -13,17 +13,6 @@ form.formulario {
   margin-bottom: 5%;
 }
 
-div.grupo-input {
-  display: flex;
-  flex-direction: column;
-  min-width: fit-content;
-  padding: 0.1em 0.25em 0.1em 0.25em;
-}
-
-div.grupo-input label {
-  white-space: nowrap;
-}
-
 .painel-botoes-controle > div {
   flex: 1 1 0px;
 }
