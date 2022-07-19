@@ -67,7 +67,7 @@ export default class Simulador {
     const l = Math.floor(y / this.TAMANHO);
     const c = Math.floor(x / this.TAMANHO);
     if (l >= 0 && l < this.LINHAS && c >= 0 && c < this.COLUNAS) {
-      this.plano[l][c][this.camadaExibida] = 1;
+      this.plano[l][c][this.camadaExibida]++;
     }
   }
 
@@ -101,7 +101,6 @@ export default class Simulador {
 
   // Desenha na tela
   draw(ctx, dt) {
-
     const somaIntensidade = { a: 0, b: 0 };
     // Limpa desenho anterior
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
@@ -115,8 +114,9 @@ export default class Simulador {
         somaIntensidade.a += intensidade.a;
         somaIntensidade.b += intensidade.b;
 
-        ctx.fillStyle = `hsl(${(1 - intensidade[this.camadaExibida]) * 100
-          }deg, 100%, 50%)`;
+        ctx.fillStyle = `hsl(${
+          (1 - intensidade[this.camadaExibida]) * 100
+        }deg, 100%, 50%)`;
         ctx.fillRect(
           c * this.TAMANHO,
           l * this.TAMANHO,
@@ -187,14 +187,14 @@ export default class Simulador {
             this.calculaAcrescimoIntensidade(plano, l, c, "a") -
             intensidade.a * intensidade.b * intensidade.b +
             this.fatorAdicao * (1 - intensidade.a)) *
-          dt;
+            dt;
         const intensidadeBFutura =
           intensidade.b +
           (this.fatorDifusao["b"] *
             this.calculaAcrescimoIntensidade(plano, l, c, "b") +
             intensidade.a * intensidade.b * intensidade.b -
             (this.fatorDecaimento + this.fatorAdicao) * intensidade.b) *
-          dt;
+            dt;
         if (intensidadeAFutura > 0) planoFuturo[l][c].a = intensidadeAFutura;
         else planoFuturo[l][c].a = 0;
         if (intensidadeBFutura > 0) planoFuturo[l][c].b = intensidadeBFutura;
