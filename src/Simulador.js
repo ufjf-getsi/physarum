@@ -34,6 +34,8 @@ export default class Simulador {
         else return Math.random();
       },
     };
+    this.valoresPadrao.a = "A";
+    this.valoresPadrao.b = "A";
     this.intensidadeMaxima = { a: 1, b: 1 };
 
     this.inicializarComValoresPadrao();

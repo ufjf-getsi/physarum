@@ -1,7 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 import "./formulario.css";
 
-export default function Formulario({ handleSubmit, camadaExibida }) {
+export default function Formulario({
+  handleSubmit,
+  camadaExibida,
+  valoresLinhasConfigCamada,
+}) {
   const linhasConfigCamada = [];
   linhasConfigCamada.push(
     <div className="linha" key="linhaA">
@@ -15,7 +19,7 @@ export default function Formulario({ handleSubmit, camadaExibida }) {
             min="0"
             max="10"
             step="0.001"
-            defaultValue="1"
+            defaultValue={valoresLinhasConfigCamada.a.fatorDifusaoA}
           />
         </div>
       </div>
@@ -30,7 +34,7 @@ export default function Formulario({ handleSubmit, camadaExibida }) {
             min="0"
             max="10"
             step="0.001"
-            defaultValue="0.055"
+            defaultValue={valoresLinhasConfigCamada.a.fatorAdicao}
           />
         </div>
       </div>
@@ -38,7 +42,11 @@ export default function Formulario({ handleSubmit, camadaExibida }) {
       <div className="coluna">
         <div className="grupo-input">
           <label htmlFor="padraoASelect">Padrão</label>
-          <select id="padraoASelect" name="padraoA" defaultValue={"A"}>
+          <select
+            id="padraoASelect"
+            name="padraoA"
+            defaultValue={valoresLinhasConfigCamada.a.padraoA}
+          >
             <option value="0">0</option>
             <option value="1">1</option>
             <option value="A">Aleatório</option>
@@ -59,7 +67,7 @@ export default function Formulario({ handleSubmit, camadaExibida }) {
             min="0"
             max="10"
             step="0.001"
-            defaultValue="0.5"
+            defaultValue={valoresLinhasConfigCamada.b.fatorDifusaoB}
           />
         </div>
       </div>
@@ -74,7 +82,7 @@ export default function Formulario({ handleSubmit, camadaExibida }) {
             min="0"
             max="10"
             step="0.001"
-            defaultValue="0.062"
+            defaultValue={valoresLinhasConfigCamada.b.fatorDecaimento}
           />
         </div>
       </div>
@@ -82,7 +90,11 @@ export default function Formulario({ handleSubmit, camadaExibida }) {
       <div className="coluna">
         <div className="grupo-input">
           <label htmlFor="padraoBSelect">Padrão</label>
-          <select id="padraoBSelect" name="padraoB" defaultValue={"A"}>
+          <select
+            id="padraoBSelect"
+            name="padraoB"
+            defaultValue={valoresLinhasConfigCamada.b.padraoB}
+          >
             <option value="0">0</option>
             <option value="1">1</option>
             <option value="A">Aleatório</option>

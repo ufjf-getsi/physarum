@@ -12,6 +12,10 @@ simulador.simulacaoPermitida = false;
 export default function App() {
   const [animate, setAnimate] = useState(false);
   const [camadaExibida, setCamadaExibida] = useState("a");
+  const [valoresLinhasConfigCamada, setValoresLinhasConfigCamada] = useState({
+    a: { fatorDifusaoA: 1, fatorAdicao: 0.055, padraoA: "A" },
+    b: { fatorDifusaoB: 0.5, fatorDecaimento: 0.062, padraoB: "A" },
+  });
 
   // Gerenciadores de eventos
   const handleMouseMove = (event) => {
@@ -47,14 +51,40 @@ export default function App() {
     const formProps = Object.fromEntries(formDados);
     switch (camadaExibida) {
       case "a":
-        simulador.fatorAdicao = Number(formProps.fatorAdicao);
-        simulador.fatorDifusao.a = Number(formProps.fatorDifusaoA);
-        simulador.valoresPadrao.a = formProps.padraoA;
+        const fatorAdicao = Number(formProps.fatorAdicao);
+        simulador.fatorAdicao = fatorAdicao;
+        const fatorDifusaoA = Number(formProps.fatorDifusaoA);
+        simulador.fatorDifusao.a = fatorDifusaoA;
+        const valoresPadraoA = formProps.padraoA;
+        simulador.valoresPadrao.a = valoresPadraoA;
+        setValoresLinhasConfigCamada((prevState) => ({
+          a: {
+            fatorDifusaoA: fatorDifusaoA,
+            fatorAdicao: fatorAdicao,
+            padraoA: valoresPadraoA,
+          },
+          b: {
+            ...prevState.b,
+          },
+        }));
         break;
       case "b":
-        simulador.fatorDecaimento = Number(formProps.fatorDecaimento);
-        simulador.fatorDifusao.b = Number(formProps.fatorDifusaoB);
-        simulador.valoresPadrao.b = formProps.padraoB;
+        const fatorDecaimento = Number(formProps.fatorDecaimento);
+        simulador.fatorDecaimento = fatorDecaimento;
+        const fatorDifusaoB = Number(formProps.fatorDifusaoB);
+        simulador.fatorDifusao.b = fatorDifusaoB;
+        const valoresPadraoB = formProps.padraoB;
+        simulador.valoresPadrao.b = valoresPadraoB;
+        setValoresLinhasConfigCamada((prevState) => ({
+          a: {
+            ...prevState.a,
+          },
+          b: {
+            fatorDifusaoB: fatorDifusaoB,
+            fatorDecaimento: fatorDecaimento,
+            padraoB: valoresPadraoB,
+          },
+        }));
         break;
       default:
         break;
@@ -108,6 +138,7 @@ export default function App() {
           handleSubmit={handleSubmit}
           handleChange={handleChange}
           camadaExibida={camadaExibida}
+          valoresLinhasConfigCamada={valoresLinhasConfigCamada}
         />
       </div>
     </div>

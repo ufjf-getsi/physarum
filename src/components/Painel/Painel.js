@@ -9,6 +9,7 @@ export default function Painel({
   handleSubmit,
   handleChange,
   camadaExibida,
+  valoresLinhasConfigCamada,
 }) {
   return (
     <div className="linha painel-inferior">
@@ -52,6 +53,7 @@ export default function Painel({
           <Formulario
             handleSubmit={handleSubmit}
             camadaExibida={camadaExibida}
+            valoresLinhasConfigCamada={valoresLinhasConfigCamada}
           />
         </div>
       </div>
