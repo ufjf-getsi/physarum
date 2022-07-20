@@ -27,12 +27,29 @@ export default function Painel({
         </div>
       </div>
       <div className="coluna">
-        <Formulario
-          animate={animate}
-          handleClickPlayPause={handleClickPlayPause}
-          handleClickReset={handleClickReset}
-          handleSubmit={handleSubmit}
-        />
+        <div className="config-container">
+          <div className="linha painel-botoes-controle">
+            <div className="coluna">
+              <button
+                id="botaoPause"
+                className="botao-pause"
+                onClick={handleClickPlayPause}
+              >
+                {animate ? "⏸ Pausar" : "▶ Continuar"}
+              </button>
+            </div>
+            <div className="coluna">
+              <button
+                id="botaoReiniciar"
+                className="botao-reiniciar"
+                onClick={handleClickReset}
+              >
+                Reiniciar
+              </button>
+            </div>
+          </div>
+          <Formulario handleSubmit={handleSubmit} />
+        </div>
       </div>
       <div className="coluna">
         <div className="grupo-escala">
