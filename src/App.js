@@ -11,6 +11,8 @@ simulador.simulacaoPermitida = false;
 
 export default function App() {
   const [animate, setAnimate] = useState(false);
+  const [camadaExibida, setCamadaExibida] = useState("a");
+
   // Gerenciadores de eventos
   const handleMouseMove = (event) => {
     event.preventDefault();
@@ -32,7 +34,6 @@ export default function App() {
       }
     }
   };
-
   const handleClickPlayPause = (event) => {
     setAnimate(!animate);
   };
@@ -40,17 +41,25 @@ export default function App() {
   const handleClickReset = (event) => {
     simulador.inicializarComValoresPadrao();
   };
-
   const handleSubmit = (event) => {
     event.preventDefault();
     const formDados = new FormData(event.target);
     const formProps = Object.fromEntries(formDados);
-    simulador.fatorAdicao = Number(formProps.fatorAdicao);
-    simulador.fatorDecaimento = Number(formProps.fatorDecaimento);
-    simulador.fatorDifusao.a = Number(formProps.fatorDifusaoA);
-    simulador.fatorDifusao.b = Number(formProps.fatorDifusaoB);
-    simulador.valoresPadrao.a = formProps.padraoA;
-    simulador.valoresPadrao.b = formProps.padraoB;
+    switch (camadaExibida) {
+      case "a":
+        simulador.fatorAdicao = Number(formProps.fatorAdicao);
+        simulador.fatorDifusao.a = Number(formProps.fatorDifusaoA);
+        simulador.valoresPadrao.a = formProps.padraoA;
+        break;
+      case "b":
+        simulador.fatorDecaimento = Number(formProps.fatorDecaimento);
+        simulador.fatorDifusao.b = Number(formProps.fatorDifusaoB);
+        simulador.valoresPadrao.b = formProps.padraoB;
+        break;
+      default:
+        break;
+    }
+
     let linhasForm = parseInt(formProps.qtdLinhas);
     let colunasForm = parseInt(formProps.qtdColunas);
     let tamanhoForm = parseInt(formProps.tamanho);
@@ -68,7 +77,9 @@ export default function App() {
     }
   };
   const handleChange = (event) => {
-    simulador.camadaExibida = event.target.value;
+    const camadaExibidaAux = event.target.value;
+    setCamadaExibida(camadaExibidaAux);
+    simulador.camadaExibida = camadaExibidaAux;
   };
 
   //Testes
@@ -96,6 +107,7 @@ export default function App() {
           handleClickReset={handleClickReset}
           handleSubmit={handleSubmit}
           handleChange={handleChange}
+          camadaExibida={camadaExibida}
         />
       </div>
     </div>

@@ -8,6 +8,7 @@ export default function Painel({
   handleClickReset,
   handleSubmit,
   handleChange,
+  camadaExibida,
 }) {
   return (
     <div className="linha painel-inferior">
@@ -48,7 +49,10 @@ export default function Painel({
               </button>
             </div>
           </div>
-          <Formulario handleSubmit={handleSubmit} />
+          <Formulario
+            handleSubmit={handleSubmit}
+            camadaExibida={camadaExibida}
+          />
         </div>
       </div>
       <div className="coluna">

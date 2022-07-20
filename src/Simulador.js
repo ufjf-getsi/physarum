@@ -111,8 +111,6 @@ export default class Simulador {
     const infoIntMax = document.getElementById("infoIntensidadeMaxima");
 
     // Desenha na tela conforme os valores do plano
-    // intensidadeMaxInst.a = 0;
-    // intensidadeMaxInst.b = 0;
     intensidadeMaxInst[this.camadaExibida] = 0;
     for (let l = 0; l < this.LINHAS; l++) {
       for (let c = 0; c < this.COLUNAS; c++) {
@@ -128,10 +126,6 @@ export default class Simulador {
         )
           intensidadeMaxInst[this.camadaExibida] =
             intensidade[this.camadaExibida];
-        // if (intensidade.a > intensidadeMaxInst.a)
-        //   intensidadeMaxInst.a = intensidade.a;
-        // if (intensidade.b > intensidadeMaxInst.b)
-        //   intensidadeMaxInst.b = intensidade.b;
 
         ctx.fillStyle = `hsl(${
           (1 -
