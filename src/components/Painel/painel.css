@@ -40,3 +40,17 @@ div.grupo-escala > :nth-child(1) {
 div.grupo-escala > :nth-child(2) {
   justify-content: space-between;
 }
+
+.config-container {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.painel-botoes-controle * button {
+  min-height: 23px;
+}
+
+.painel-botoes-controle > div {
+  flex: 1 1 0px;
+}

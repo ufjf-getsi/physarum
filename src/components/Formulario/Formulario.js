@@ -1,10 +1,7 @@
 import React from "react";
 import "./formulario.css";
 
-export default function Formulario({
-  animate,
-  handleSubmit,
-}) {
+export default function Formulario({ handleSubmit }) {
   return (
     <form className="formulario" onSubmit={(event) => handleSubmit(event)}>
       <div className="configuracoes">
