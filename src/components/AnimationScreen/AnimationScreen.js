@@ -1,16 +1,18 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect } from "react";
 import "./AnimationScreen.css";
 
-export default function Canvas({handleAnimationStep, handleDraw,
+export default function AnimationScreen({
+  handleAnimationStep,
+  handleDraw,
   animate,
   width,
   height,
   handleMouseMove,
   handleMouseDown,
-  handleTouchMove }) {
+  handleTouchMove,
+}) {
   const canvasRef = useRef(null);
-  
-  
+
   useEffect(() => {
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
@@ -27,9 +29,8 @@ export default function Canvas({handleAnimationStep, handleDraw,
     }
     return () => {
       window.cancelAnimationFrame(animationFrameId);
-    }
+    };
   }, [animate]);
-
 
   return (
     <canvas
