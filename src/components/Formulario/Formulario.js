@@ -1,113 +1,59 @@
-import React from "react";
+import React, { useState } from "react";
 import "./formulario.css";
+import LinhasConfigCamada from "./../../components/LinhasConfigCamada/LinhasConfigCamada";
 
 export default function Formulario({
   handleSubmit,
   camadaExibida,
   valoresLinhasConfigCamada,
 }) {
-  const linhasConfigCamada = [];
-  linhasConfigCamada.push(
-    <div className="linha" key="linhaA">
-      <div className="coluna">
-        <div className="grupo-input">
-          <label htmlFor="fatorDifusaoAInput">Difusão de A</label>
-          <input
-            id="fatorDifusaoAInput"
-            name="fatorDifusaoA"
-            type="number"
-            min="0"
-            max="10"
-            step="0.001"
-            defaultValue={valoresLinhasConfigCamada.a.fatorDifusaoA}
-          />
-        </div>
-      </div>
+  const [classeCampoLCC, setClasseCampoLCC] = useState([
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+  ]);
 
-      <div className="coluna">
-        <div className="grupo-input">
-          <label htmlFor="fatorAdicaoInput">Adição</label>
-          <input
-            id="fatorAdicaoInput"
-            name="fatorAdicao"
-            type="number"
-            min="0"
-            max="10"
-            step="0.001"
-            defaultValue={valoresLinhasConfigCamada.a.fatorAdicao}
-          />
-        </div>
-      </div>
+  function alteraCorCampo(event) {
+    const elemento = event.target;
+    if (
+      elemento.parentElement.parentElement.parentElement.parentElement.id ===
+      "linhasConfigCamada"
+    ) {
+      const campos = document.querySelectorAll(
+        "#linhasConfigCamada input, #linhasConfigCamada select"
+      );
+      const indice = Array.prototype.indexOf.call(campos, elemento);
+      classeCampoLCC[indice] = "alterado";
+      setClasseCampoLCC([...classeCampoLCC]);
+    } else elemento.classList.add("alterado");
+  }
 
-      <div className="coluna">
-        <div className="grupo-input">
-          <label htmlFor="padraoASelect">Padrão</label>
-          <select
-            id="padraoASelect"
-            name="padraoA"
-            defaultValue={valoresLinhasConfigCamada.a.padraoA}
-          >
-            <option value="0">0</option>
-            <option value="1">1</option>
-            <option value="A">Aleatório</option>
-          </select>
-        </div>
-      </div>
-    </div>
-  );
-  linhasConfigCamada.push(
-    <div className="linha" key="linhaB">
-      <div className="coluna">
-        <div className="grupo-input">
-          <label htmlFor="fatorDifusaoBInput">Difusão de B</label>
-          <input
-            id="fatorDifusaoBInput"
-            name="fatorDifusaoB"
-            type="number"
-            min="0"
-            max="10"
-            step="0.001"
-            defaultValue={valoresLinhasConfigCamada.b.fatorDifusaoB}
-          />
-        </div>
-      </div>
-
-      <div className="coluna">
-        <div className="grupo-input">
-          <label htmlFor="fatorDecaimentoInput">Decaimento</label>
-          <input
-            id="fatorDecaimentoInput"
-            name="fatorDecaimento"
-            type="number"
-            min="0"
-            max="10"
-            step="0.001"
-            defaultValue={valoresLinhasConfigCamada.b.fatorDecaimento}
-          />
-        </div>
-      </div>
-
-      <div className="coluna">
-        <div className="grupo-input">
-          <label htmlFor="padraoBSelect">Padrão</label>
-          <select
-            id="padraoBSelect"
-            name="padraoB"
-            defaultValue={valoresLinhasConfigCamada.b.padraoB}
-          >
-            <option value="0">0</option>
-            <option value="1">1</option>
-            <option value="A">Aleatório</option>
-          </select>
-        </div>
-      </div>
-    </div>
-  );
+  function limpaDecoracaoCampos() {
+    const camadaExibidaInt = camadaExibida.charCodeAt(0) - 97;
+    for (let int = 0; int < 3; int++) {
+      const indice = camadaExibidaInt * 3 + int;
+      classeCampoLCC[indice] = "";
+    }
+    setClasseCampoLCC([...classeCampoLCC]);
+    const linhaInferior = document.getElementById("configuracoes").children[1];
+    for (const coluna of linhaInferior.children) {
+      const elemento = coluna.firstChild.children[1];
+      elemento.classList.remove("alterado");
+    }
+  }
 
   return (
     <form className="formulario" onSubmit={(event) => handleSubmit(event)}>
-      <div className="configuracoes">
-        {linhasConfigCamada[camadaExibida.charCodeAt(0) - 97]}
+      <div id="configuracoes" className="configuracoes">
+        <LinhasConfigCamada
+          camadaExibida={camadaExibida}
+          valoresLinhasConfigCamada={valoresLinhasConfigCamada}
+          alteraCorCampo={alteraCorCampo}
+          classeCampoLCC={classeCampoLCC}
+        />
         <div className="linha">
           <div className="coluna">
             <div className="grupo-input">
@@ -120,6 +66,7 @@ export default function Formulario({
                 max="200"
                 step="1"
                 defaultValue="50"
+                onChange={(event) => alteraCorCampo(event)}
               />
             </div>
           </div>
@@ -135,6 +82,7 @@ export default function Formulario({
                 max="200"
                 step="1"
                 defaultValue="50"
+                onChange={(event) => alteraCorCampo(event)}
               />
             </div>
           </div>
@@ -150,12 +98,17 @@ export default function Formulario({
                 max="10"
                 step="1"
                 defaultValue="7"
+                onChange={(event) => alteraCorCampo(event)}
               />
             </div>
           </div>
         </div>
       </div>
-      <input type="submit" value="Mudar parâmetros" />
+      <input
+        type="submit"
+        value="Mudar parâmetros"
+        onClick={limpaDecoracaoCampos}
+      />
     </form>
   );
 }

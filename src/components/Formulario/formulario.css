@@ -10,3 +10,9 @@ form.formulario {
 .grupo-radio {
   font-size: calc(0.25em + 1vmin);
 }
+
+.alterado {
+  background-color: hsl(0deg, 100%, 95%);
+  border-color: hsl(0deg, 100%, 95%);
+  border-style: solid;
+}
