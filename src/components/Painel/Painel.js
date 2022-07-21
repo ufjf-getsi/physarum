@@ -13,7 +13,7 @@ export default function Painel({
 }) {
   return (
     <div className="linha painel-inferior">
-      <div className="coluna">
+      <div className="">
         <div className="grupo-input">
           <label htmlFor="camadaSelect">Camada</label>
           <select
@@ -28,7 +28,7 @@ export default function Painel({
           </select>
         </div>
       </div>
-      <div className="coluna">
+      <div className="">
         <div className="config-container">
           <div className="linha painel-botoes-controle">
             <div className="coluna">
@@ -57,7 +57,7 @@ export default function Painel({
           />
         </div>
       </div>
-      <div className="coluna">
+      <div className="">
         <div className="grupo-escala">
           <div id="escala"></div>
           <div className="linha">

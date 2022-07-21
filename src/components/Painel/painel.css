@@ -1,9 +1,18 @@
 .painel-inferior {
   width: 100%;
+  flex-direction: column;
+  row-gap: 1em;
+}
+
+@media (min-width: 768px) {
+  .painel-inferior {
+    flex-direction: row;
+  }
 }
 
 .painel-inferior > div {
   flex: 1 1 0px;
+  width: 100%;
 }
 
 .camada-select {
