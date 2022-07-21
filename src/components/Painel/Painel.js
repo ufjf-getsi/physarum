@@ -1,5 +1,5 @@
 import React from "react";
-import "./painel.css";
+import "./Painel.css";
 import Formulario from "./../../components/Formulario/Formulario";
 
 export default function Painel({

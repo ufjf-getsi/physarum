@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./formulario.css";
+import "./Formulario.css";
 import LinhasConfigCamada from "./../../components/LinhasConfigCamada/LinhasConfigCamada";
 
 export default function Formulario({
