@@ -5,8 +5,7 @@ export default class Simulador {
     this.desenhoPermitido = false;
     this.camadaExibida = "a";
     this.dtUpdate = 0;
-    this.ultimoUpdate = Date.now();
-    this.framerateInvertido = 1 / 60;
+    this.somaDt = 0;
 
     // Dimensões do plano
     this.LINHAS = linhas;
@@ -89,13 +88,11 @@ export default class Simulador {
       return;
     }
 
-    const agora = Date.now();
-    this.dtUpdate += (agora - this.ultimoUpdate) / 1000;
-    this.ultimoUpdate = agora;
+    this.dtUpdate = 1 / 60 / 10;
 
-    while (this.dtUpdate >= this.framerateInvertido) {
-      this.update(ctx, dt);
-      this.dtUpdate -= this.framerateInvertido;
+    while (this.somaDt < dt) {
+      this.update(ctx, this.dtUpdate);
+      this.somaDt += this.dtUpdate;
     }
 
     this.draw(ctx, dt);
