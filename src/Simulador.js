@@ -4,6 +4,9 @@ export default class Simulador {
     this.t0 = null; // Tempo inicial
     this.desenhoPermitido = false;
     this.camadaExibida = "a";
+    this.dtUpdate = 0;
+    this.ultimoUpdate = Date.now();
+    this.framerateInvertido = 1 / 60;
 
     // Dimensões do plano
     this.LINHAS = linhas;
@@ -86,7 +89,15 @@ export default class Simulador {
       return;
     }
 
-    this.update(ctx, dt);
+    const agora = Date.now();
+    this.dtUpdate += (agora - this.ultimoUpdate) / 1000;
+    this.ultimoUpdate = agora;
+
+    while (this.dtUpdate >= this.framerateInvertido) {
+      this.update(ctx, dt);
+      this.dtUpdate -= this.framerateInvertido;
+    }
+
     this.draw(ctx, dt);
     // Define tempo inicial da próxima animação como o tempo atual
     this.t0 = t;
