@@ -4,6 +4,8 @@ export default class Simulador {
     this.t0 = null; // Tempo inicial
     this.desenhoPermitido = false;
     this.camadaExibida = "a";
+    this.dtU = 0;
+    this.somaDtU = 0;
 
     // Dimensões do plano
     this.LINHAS = linhas;
@@ -78,22 +80,30 @@ export default class Simulador {
     if (this.t0 === null) {
       this.t0 = t;
     }
-    let dt = (t - this.t0) / 1000; // Intervalo entre tempo atual e anterior
-    if (dt > 3 / 60) {
-      console.log("dt too long: " + dt, "t0: " + this.t0, "t: " + t);
-      dt = 0.0;
+    let dtA = (t - this.t0) / 1000; // Intervalo entre tempo atual e anterior
+    if (dtA > 3 / 60) {
+      console.log("dt too long: " + dtA, "t0: " + this.t0, "t: " + t);
+      dtA = 0.0;
       this.t0 = t;
       return;
     }
 
-    this.update(ctx, dt);
-    this.draw(ctx, dt);
+    this.dtU = 1 / 60 / 10;
+
+    while (this.somaDtU < dtA) {
+      this.update(this.dtU);
+      this.somaDtU += this.dtU;
+    }
+
+    this.somaDtU = this.somaDtU - this.dtU - dtA;
+
+    this.draw(ctx);
     // Define tempo inicial da próxima animação como o tempo atual
     this.t0 = t;
   }
 
   // Atualiza o estado
-  update(ctx, dt) {
+  update(dt) {
     // Calcula reação
     this.reacao(this.plano, this.planoFuturo, dt);
     // Troca de estado
@@ -103,7 +113,7 @@ export default class Simulador {
   }
 
   // Desenha na tela
-  draw(ctx, dt) {
+  draw(ctx) {
     const somaIntensidade = { a: 0, b: 0 };
     let intensidadeMaxInst = { a: 0, b: 0 };
 
