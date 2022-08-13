@@ -11,6 +11,7 @@ simulador.simulacaoPermitida = false;
 
 export default function App() {
   const [animate, setAnimate] = useState(false);
+  const [insPausado, setInsPausado] = useState(false);
   const [camadaExibida, setCamadaExibida] = useState("a");
   const [valoresLinhasConfigCamada, setValoresLinhasConfigCamada] = useState({
     a: { fatorDifusaoA: 1, fatorAdicao: 0.055, padraoA: "A" },
@@ -23,10 +24,18 @@ export default function App() {
     if (simulador.desenhoPermitido) simulador.depositaIntensidade(event);
   };
   const handleMouseDown = (event) => {
+    if (animate === false && insPausado === false) {
+      setAnimate(true);
+      setInsPausado(true);
+    }
     event.preventDefault();
     simulador.desenhoPermitido = true;
   };
   window.addEventListener("mouseup", () => {
+    if (animate === true && insPausado === true) {
+      setAnimate(!animate);
+    }
+    setInsPausado(false);
     simulador.desenhoPermitido = false;
   });
   const handleTouchMove = (event) => {
@@ -39,6 +48,7 @@ export default function App() {
     }
   };
   const handleClickPlayPause = (event) => {
+    if (animate === true) setInsPausado(false);
     setAnimate(!animate);
   };
 
