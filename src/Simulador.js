@@ -40,6 +40,8 @@ export default class Simulador {
     this.valoresPadrao.b = "A";
     this.intensidadeMaxima = { a: 1, b: 1 };
 
+    this.canvas = 0;
+
     this.inicializarComValoresPadrao();
   }
 
@@ -114,6 +116,7 @@ export default class Simulador {
 
   // Desenha na tela
   draw(ctx) {
+    ctx = ctx ?? this.canvas.getContext("2d");
     const somaIntensidade = { a: 0, b: 0 };
     let intensidadeMaxInst = { a: 0, b: 0 };
 
@@ -153,6 +156,7 @@ export default class Simulador {
         );
       }
     }
+
     // Exibe concentração total
     document.getElementById("infoFerA").textContent =
       somaIntensidade.a.toFixed(2);

@@ -10,6 +10,7 @@ export default function AnimationScreen({
   handleMouseMove,
   handleMouseDown,
   handleTouchMove,
+  simulador,
 }) {
   const canvasRef = useRef(null);
 
@@ -31,7 +32,7 @@ export default function AnimationScreen({
       window.cancelAnimationFrame(animationFrameId);
     };
   }, [animate]);
-
+  simulador.canvas = canvasRef.current;
   return (
     <canvas
       className="canvas"
