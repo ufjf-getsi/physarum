@@ -4,7 +4,7 @@ export default class Simulador {
     this.t0 = null; // Tempo inicial
     this.desenhoPermitido = false;
     this.camadaExibida = "a";
-    this.dtU = 0;
+    this.dtU = 1 / 60 / 10;
     this.somaDtU = 0;
 
     // Dimensões do plano
@@ -89,8 +89,6 @@ export default class Simulador {
       this.t0 = t;
       return;
     }
-
-    this.dtU = 1 / 60 / 10;
 
     while (this.somaDtU < dtA) {
       this.update(this.dtU);
