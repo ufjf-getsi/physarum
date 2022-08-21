@@ -25,8 +25,10 @@ export default function App() {
   // Gerenciadores de eventos
   const handleMouseMove = (event) => {
     event.preventDefault();
-    if (simulador.desenhoPermitido) simulador.depositaIntensidade(event);
-    simulador.draw();
+    if (simulador.desenhoPermitido) {
+      simulador.depositaIntensidade(event);
+      simulador.draw();
+    }
   };
   const handleMouseDown = (event) => {
     event.preventDefault();
@@ -44,11 +46,10 @@ export default function App() {
       }
     }
   };
-  const handleClickPlayPause = (event) => {
+  const handleClickPlayPause = () => {
     setAnimate(!animate);
   };
-
-  const handleClickReset = (event) => {
+  const handleClickReset = () => {
     simulador.inicializarComValoresPadrao();
   };
   const handleSubmit = (event) => {
