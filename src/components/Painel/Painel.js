@@ -7,9 +7,12 @@ export default function Painel({
   handleClickPlayPause,
   handleClickReset,
   handleSubmit,
-  handleChange,
+  handleChangeCamada,
+  handleChangeDimensoes,
+  handleChangeParametros,
   camadaExibida,
-  valoresLinhasConfigCamada,
+  camposDimensoes,
+  camposParametros,
 }) {
   return (
     <div className="linha painel-inferior">
@@ -21,14 +24,14 @@ export default function Painel({
             className="camada-select"
             name="camada"
             defaultValue={"A"}
-            onChange={(event) => handleChange(event)}
+            onChange={(event) => handleChangeCamada(event)}
           >
             <option value="a">A</option>
             <option value="b">B</option>
           </select>
         </div>
       </div>
-      <div className="">
+      <div>
         <div className="config-container">
           <div className="linha painel-botoes-controle">
             <div className="coluna">
@@ -53,7 +56,10 @@ export default function Painel({
           <Formulario
             handleSubmit={handleSubmit}
             camadaExibida={camadaExibida}
-            valoresLinhasConfigCamada={valoresLinhasConfigCamada}
+            camposDimensoes={camposDimensoes}
+            camposParametros={camposParametros}
+            handleChangeDimensoes={handleChangeDimensoes}
+            handleChangeParametros={handleChangeParametros}
           />
         </div>
       </div>

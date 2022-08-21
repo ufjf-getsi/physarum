@@ -16,3 +16,14 @@ form.formulario {
   border-color: hsl(0deg, 100%, 95%);
   border-style: solid;
 }
+
+div.grupo-input {
+  display: flex;
+  flex-direction: column;
+  min-width: fit-content;
+  padding: 0.1em 0.25em 0.1em 0.25em;
+}
+
+div.grupo-input label {
+  white-space: nowrap;
+}

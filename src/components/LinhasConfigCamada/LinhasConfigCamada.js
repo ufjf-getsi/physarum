@@ -1,125 +1,58 @@
 import React from "react";
+import GrupoInput from "../GrupoInput/GrupoInput";
+import GrupoSelect from "../GrupoSelect/GrupoSelect";
 
 export default function LinhasConfigCamada({
   camadaExibida,
-  valoresLinhasConfigCamada,
-  alteraCorCampo,
-  classeCampoLCC,
+  camposParametros,
+  handleChange,
 }) {
-  return (
-    <div id="linhasConfigCamada">
+  function letraDoAlfabeto(indice) {
+    return String.fromCharCode(97 + indice);
+  }
+  let linhas = [];
+  for (let int = 0; int < 2; int++) {
+    const camada = letraDoAlfabeto(int);
+    const camadaMaiusculo = camada.toUpperCase();
+    const adicaoOuDecaimento = camada === "a" ? "Adicao" : "Decaimento";
+    const linha = (
       <div
         className="linha"
-        key="linhaA"
-        style={{ display: camadaExibida === "a" ? "flex" : "none" }}
+        key={"linha" + camadaMaiusculo}
+        style={{ display: camadaExibida === camada ? "flex" : "none" }}
       >
-        <div className="coluna">
-          <div className="grupo-input">
-            <label htmlFor="fatorDifusaoAInput">Difusão de A</label>
-            <input
-              id="fatorDifusaoAInput"
-              name="fatorDifusaoA"
-              type="number"
-              min="0"
-              max="10"
-              step="0.001"
-              defaultValue={valoresLinhasConfigCamada.a.fatorDifusaoA}
-              onChange={(event) => alteraCorCampo(event)}
-              className={classeCampoLCC[0]}
-            />
-          </div>
-        </div>
-
-        <div className="coluna">
-          <div className="grupo-input">
-            <label htmlFor="fatorAdicaoInput">Adição</label>
-            <input
-              id="fatorAdicaoInput"
-              name="fatorAdicao"
-              type="number"
-              min="0"
-              max="10"
-              step="0.001"
-              defaultValue={valoresLinhasConfigCamada.a.fatorAdicao}
-              onChange={(event) => alteraCorCampo(event)}
-              className={classeCampoLCC[1]}
-            />
-          </div>
-        </div>
-
-        <div className="coluna">
-          <div className="grupo-input">
-            <label htmlFor="padraoASelect">Padrão</label>
-            <select
-              id="padraoASelect"
-              name="padraoA"
-              defaultValue={valoresLinhasConfigCamada.a.padraoA}
-              onChange={(event) => alteraCorCampo(event)}
-              className={classeCampoLCC[2]}
-            >
-              <option value="0">0</option>
-              <option value="1">1</option>
-              <option value="A">Aleatório</option>
-            </select>
-          </div>
-        </div>
+        <GrupoInput
+          label={"Difusão de " + camadaMaiusculo}
+          name="fatorDifusao"
+          type="number"
+          min="0"
+          max="10"
+          step="0.001"
+          value={camposParametros[camada].fatorDifusao}
+          handleChange={(event) => handleChange(event)}
+          camada={camada}
+        />
+        <GrupoInput
+          label={adicaoOuDecaimento}
+          name={`fator${adicaoOuDecaimento}`}
+          type="number"
+          min="0"
+          max="10"
+          step="0.001"
+          value={camposParametros[camada][`fator${adicaoOuDecaimento}`]}
+          handleChange={(event) => handleChange(event)}
+          camada={camada}
+        />
+        <GrupoSelect
+          label="Padrao"
+          name="padrao"
+          value={camposParametros[camada].padrao}
+          handleChange={(event) => handleChange(event)}
+          camada={camada}
+        />
       </div>
-      <div
-        className="linha"
-        key="linhaB"
-        style={{ display: camadaExibida === "b" ? "flex" : "none" }}
-      >
-        <div className="coluna">
-          <div className="grupo-input">
-            <label htmlFor="fatorDifusaoBInput">Difusão de B</label>
-            <input
-              id="fatorDifusaoBInput"
-              name="fatorDifusaoB"
-              type="number"
-              min="0"
-              max="10"
-              step="0.001"
-              defaultValue={valoresLinhasConfigCamada.b.fatorDifusaoB}
-              onChange={(event) => alteraCorCampo(event)}
-              className={classeCampoLCC[3]}
-            />
-          </div>
-        </div>
-
-        <div className="coluna">
-          <div className="grupo-input">
-            <label htmlFor="fatorDecaimentoInput">Decaimento</label>
-            <input
-              id="fatorDecaimentoInput"
-              name="fatorDecaimento"
-              type="number"
-              min="0"
-              max="10"
-              step="0.001"
-              defaultValue={valoresLinhasConfigCamada.b.fatorDecaimento}
-              onChange={(event) => alteraCorCampo(event)}
-              className={classeCampoLCC[4]}
-            />
-          </div>
-        </div>
-
-        <div className="coluna">
-          <div className="grupo-input">
-            <label htmlFor="padraoBSelect">Padrão</label>
-            <select
-              id="padraoBSelect"
-              name="padraoB"
-              defaultValue={valoresLinhasConfigCamada.b.padraoB}
-              onChange={(event) => alteraCorCampo(event)}
-              className={classeCampoLCC[5]}
-            >
-              <option value="0">0</option>
-              <option value="1">1</option>
-              <option value="A">Aleatório</option>
-            </select>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+    );
+    linhas.push(linha);
+  }
+  return <div id="linhasConfigCamada">{linhas}</div>;
 }
