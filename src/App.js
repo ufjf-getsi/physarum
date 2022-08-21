@@ -12,15 +12,23 @@ simulador.simulacaoPermitida = false;
 export default function App() {
   const [animate, setAnimate] = useState(false);
   const [camadaExibida, setCamadaExibida] = useState("a");
-  const [valoresLinhasConfigCamada, setValoresLinhasConfigCamada] = useState({
-    a: { fatorDifusaoA: 1, fatorAdicao: 0.055, padraoA: "A" },
-    b: { fatorDifusaoB: 0.5, fatorDecaimento: 0.062, padraoB: "A" },
+  const [camposParametros, setCamposParametros] = useState({
+    a: { fatorDifusao: 1, fatorAdicao: 0.055, padrao: "A" },
+    b: { fatorDifusao: 0.5, fatorDecaimento: 0.062, padrao: "A" },
+  });
+  const [camposDimensoes, setCamposDimensoes] = useState({
+    qtdLinhas: "50",
+    qtdColunas: "50",
+    tamanho: "7",
   });
 
   // Gerenciadores de eventos
   const handleMouseMove = (event) => {
     event.preventDefault();
-    if (simulador.desenhoPermitido) simulador.depositaIntensidade(event);
+    if (simulador.desenhoPermitido) {
+      simulador.depositaIntensidade(event);
+      simulador.draw();
+    }
   };
   const handleMouseDown = (event) => {
     event.preventDefault();
@@ -38,66 +46,43 @@ export default function App() {
       }
     }
   };
-  const handleClickPlayPause = (event) => {
+  const handleClickPlayPause = () => {
     setAnimate(!animate);
   };
-
-  const handleClickReset = (event) => {
+  const handleClickReset = () => {
     simulador.inicializarComValoresPadrao();
   };
   const handleSubmit = (event) => {
     event.preventDefault();
-    const formDados = new FormData(event.target);
-    const formProps = Object.fromEntries(formDados);
     switch (camadaExibida) {
       case "a":
-        const fatorAdicao = Number(formProps.fatorAdicao);
-        simulador.fatorAdicao = fatorAdicao;
-        const fatorDifusaoA = Number(formProps.fatorDifusaoA);
+        const fatorDifusaoA = Number(camposParametros.a.fatorDifusao);
         simulador.fatorDifusao.a = fatorDifusaoA;
-        const valoresPadraoA = formProps.padraoA;
+        const fatorAdicao = Number(camposParametros.a.fatorAdicao);
+        simulador.fatorAdicao = fatorAdicao;
+        const valoresPadraoA = camposParametros.a.padrao;
         simulador.valoresPadrao.a = valoresPadraoA;
-        setValoresLinhasConfigCamada((prevState) => ({
-          a: {
-            fatorDifusaoA: fatorDifusaoA,
-            fatorAdicao: fatorAdicao,
-            padraoA: valoresPadraoA,
-          },
-          b: {
-            ...prevState.b,
-          },
-        }));
         break;
       case "b":
-        const fatorDecaimento = Number(formProps.fatorDecaimento);
-        simulador.fatorDecaimento = fatorDecaimento;
-        const fatorDifusaoB = Number(formProps.fatorDifusaoB);
+        const fatorDifusaoB = Number(camposParametros.b.fatorDifusao);
         simulador.fatorDifusao.b = fatorDifusaoB;
-        const valoresPadraoB = formProps.padraoB;
+        const fatorDecaimento = Number(camposParametros.b.fatorDecaimento);
+        simulador.fatorDecaimento = fatorDecaimento;
+        const valoresPadraoB = camposParametros.b.padrao;
         simulador.valoresPadrao.b = valoresPadraoB;
-        setValoresLinhasConfigCamada((prevState) => ({
-          a: {
-            ...prevState.a,
-          },
-          b: {
-            fatorDifusaoB: fatorDifusaoB,
-            fatorDecaimento: fatorDecaimento,
-            padraoB: valoresPadraoB,
-          },
-        }));
         break;
       default:
         break;
     }
 
-    let linhasForm = parseInt(formProps.qtdLinhas);
-    let colunasForm = parseInt(formProps.qtdColunas);
-    let tamanhoForm = parseInt(formProps.tamanho);
+    let linhasForm = parseInt(camposDimensoes.qtdLinhas);
+    let colunasForm = parseInt(camposDimensoes.qtdColunas);
+    let tamanhoForm = parseInt(camposDimensoes.tamanho);
 
     if (
       linhasForm !== simulador.LINHAS ||
       colunasForm !== simulador.COLUNAS ||
-      tamanhoForm != simulador.TAMANHO
+      tamanhoForm !== simulador.TAMANHO
     ) {
       simulador.mudarTamanho(linhasForm, colunasForm, tamanhoForm);
 
@@ -105,12 +90,42 @@ export default function App() {
       canvas.setAttribute("width", simulador.COLUNAS * simulador.TAMANHO);
       canvas.setAttribute("height", simulador.LINHAS * simulador.TAMANHO);
     }
+
+    limpaDecoracaoCampos();
   };
-  const handleChange = (event) => {
+  const handleChangeCamada = (event) => {
     const camadaExibidaAux = event.target.value;
     setCamadaExibida(camadaExibidaAux);
     simulador.camadaExibida = camadaExibidaAux;
   };
+  const handleChangeDimensoes = (event) => {
+    const elemento = event.target;
+    setCamposDimensoes({
+      ...camposDimensoes,
+      [elemento.name]: elemento.value,
+    });
+    elemento.classList.add("alterado");
+  };
+  const handleChangeParametros = (event) => {
+    const elemento = event.target;
+    setCamposParametros({
+      ...camposParametros,
+      [camadaExibida]: {
+        ...camposParametros[camadaExibida],
+        [elemento.name]: elemento.value,
+      },
+    });
+    elemento.classList.add("alterado");
+  };
+
+  function limpaDecoracaoCampos() {
+    const listaElementos = document.querySelectorAll(
+      `[data-camada="${camadaExibida}"], .dimensoes input`
+    );
+    for (const elemento of listaElementos) {
+      elemento.classList.remove("alterado");
+    }
+  }
 
   //Testes
   // simulacao.plano[Math.floor(LINHAS / 2)][Math.floor(COLUNAS / 2)].a = 10;
@@ -120,6 +135,7 @@ export default function App() {
       <div className="app-container">
         <div>
           <AnimationScreen
+            simulador={simulador}
             animate={animate}
             width={simulador.COLUNAS * simulador.TAMANHO}
             height={simulador.LINHAS * simulador.TAMANHO}
@@ -136,9 +152,12 @@ export default function App() {
           handleClickPlayPause={handleClickPlayPause}
           handleClickReset={handleClickReset}
           handleSubmit={handleSubmit}
-          handleChange={handleChange}
+          handleChangeCamada={handleChangeCamada}
+          handleChangeDimensoes={handleChangeDimensoes}
+          handleChangeParametros={handleChangeParametros}
           camadaExibida={camadaExibida}
-          valoresLinhasConfigCamada={valoresLinhasConfigCamada}
+          camposDimensoes={camposDimensoes}
+          camposParametros={camposParametros}
         />
       </div>
     </div>
