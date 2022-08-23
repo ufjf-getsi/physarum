@@ -11,7 +11,7 @@ export default function LinhasConfigCamada({
     return String.fromCharCode(97 + indice);
   }
   let linhas = [];
-  for (let int = 0; int < 2; int++) {
+  for (let int = 0; int < 3; int++) {
     const camada = letraDoAlfabeto(int);
     const camadaMaiusculo = camada.toUpperCase();
     const adicaoOuDecaimento = camada === "a" ? "Adicao" : "Decaimento";

@@ -4,12 +4,16 @@ export default function InfoDisplay() {
   return (
     <div className="linha">
       <div className="grupo-info">
-        <label htmlFor="ferA">A:</label>
-        <p id="infoFerA">0</p>
+        <label htmlFor="infoA">A:</label>
+        <p id="infoA">0</p>
       </div>
       <div className="grupo-info">
-        <label htmlFor="ferB">B:</label>
-        <p id="infoFerB">0</p>
+        <label htmlFor="infoB">B:</label>
+        <p id="infoB">0</p>
+      </div>
+      <div className="grupo-info">
+        <label htmlFor="infoC">C:</label>
+        <p id="infoC">0</p>
       </div>
     </div>
   );
