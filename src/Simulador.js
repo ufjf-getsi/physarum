@@ -235,6 +235,77 @@ export default class Simulador {
     return intensidadeRedor;
   }
 
+  quimiotaxia(pontoAtual, valorMaximo) {
+    return pontoAtual / (valorMaximo + pontoAtual);
+  }
+  gradiente(pontoPosterior, pontoAnterior, valorMaximo) {
+    return (
+      this.quimiotaxia(pontoPosterior, valorMaximo) -
+      this.quimiotaxia(pontoAnterior, valorMaximo)
+    );
+  }
+  calculaQuimiotaxiaAux(
+    pontoPosteriorC,
+    pontoAnteriorC,
+    pontoPosteriorL,
+    pontoAnteriorL,
+    pontoAtual,
+    valorMedio,
+    gradienteAtratL,
+    gradienteAtratC
+  ) {
+    let gradientePopL = 0;
+    let gradientePopC = 0;
+
+    if (gradienteAtratL < 0) {
+      gradientePopL = this.gradiente(pontoPosteriorL, pontoAtual, valorMedio);
+    } else {
+      gradientePopL = this.gradiente(pontoAtual, pontoAnteriorL, valorMedio);
+    }
+    if (gradienteAtratC < 0) {
+      gradientePopC = this.gradiente(pontoPosteriorC, pontoAtual, valorMedio);
+    } else {
+      gradientePopC = this.gradiente(pontoAtual, pontoAnteriorC, valorMedio);
+    }
+
+    return gradientePopL * gradienteAtratL + gradientePopC * gradienteAtratC;
+  }
+  calculaQuimiotaxia(plano, l, c, camadaPop, camadaAtrat) {
+    const valorMedio = 1;
+    const popAtual = plano[l][c][camadaPop];
+    const atratAtual = plano[l][c][camadaAtrat];
+
+    // População
+    const popPosteriorL =
+      l != this.LINHAS - 1 ? plano[l + 1][c][camadaPop] : popAtual;
+    const popAnteriorL = l != 0 ? plano[l - 1][c][camadaPop] : popAtual;
+    const popPosteriorC =
+      c != this.COLUNAS - 1 ? plano[l][c + 1][camadaPop] : popAtual;
+    const popAnteriorC = c != 0 ? plano[l][c - 1][camadaPop] : popAtual;
+
+    // Atrativo
+    const atratPosteriorL =
+      l != this.LINHAS - 1 ? plano[l + 1][c][camadaAtrat] : atratAtual;
+    const atratAnteriorL = l != 0 ? plano[l - 1][c][camadaAtrat] : atratAtual;
+    const atratPosteriorC =
+      c != this.COLUNAS - 1 ? plano[l][c + 1][camadaAtrat] : atratAtual;
+    const atratAnteriorC = c != 0 ? plano[l][c - 1][camadaAtrat] : atratAtual;
+
+    const gradienteAtratL = (atratPosteriorL - atratAnteriorL) / 2;
+    const gradienteAtratC = (atratPosteriorC - atratAnteriorC) / 2;
+
+    return this.calculaQuimiotaxiaAux(
+      popPosteriorC,
+      popAnteriorC,
+      popPosteriorL,
+      popAnteriorL,
+      popAtual,
+      valorMedio,
+      gradienteAtratL,
+      gradienteAtratC
+    );
+  }
+
   reacao(plano, planoFuturo, dt) {
     const intensidade = {};
     const intensidadeFutura = {};
@@ -257,7 +328,9 @@ export default class Simulador {
             intensidade.a * intensidade.b * intensidade.b -
             (this.fatorDecaimento + this.fatorAdicao) * intensidade.b) *
             dt;
-        intensidadeFutura.c = intensidade.c;
+        intensidadeFutura.c =
+          intensidade.c -
+          this.calculaQuimiotaxia(plano, linha, coluna, "c", "b") * dt;
 
         planoFuturo[linha][coluna].a = Math.max(intensidadeFutura.a, 0);
         planoFuturo[linha][coluna].b = Math.max(intensidadeFutura.b, 0);
