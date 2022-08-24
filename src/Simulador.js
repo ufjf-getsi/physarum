@@ -158,20 +158,20 @@ export default class Simulador {
           intensidade[this.camadaExibida]
         );
 
-        if (this.camadaExibida === "c") {
-          ctx.fillStyle = `hsl(45deg, 100%, ${
-            (intensidade[this.camadaExibida] /
+        // if (this.camadaExibida === "c") {
+        //   ctx.fillStyle = `hsl(45deg, 100%, ${
+        //     (intensidade[this.camadaExibida] /
+        //       this.intensidadeMaxima[this.camadaExibida]) *
+        //     50
+        //   }%`;
+        // } else {
+        ctx.fillStyle = `hsl(${
+          (1 -
+            intensidade[this.camadaExibida] /
               this.intensidadeMaxima[this.camadaExibida]) *
-            50
-          }%`;
-        } else {
-          ctx.fillStyle = `hsl(${
-            (1 -
-              intensidade[this.camadaExibida] /
-                this.intensidadeMaxima[this.camadaExibida]) *
-            100
-          }deg, 100%, 50%)`;
-        }
+          100
+        }deg, 100%, 50%)`;
+        // }
         ctx.fillRect(
           coluna * this.TAMANHO,
           linha * this.TAMANHO,

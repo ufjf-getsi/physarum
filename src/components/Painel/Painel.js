@@ -65,7 +65,7 @@ export default function Painel({
         </div>
       </div>
       <div className="">
-        <div className={`grupo-escala camada-${camadaExibida}`}>
+        <div className="grupo-escala">
           <div id="escala"></div>
           <div className="linha">
             <span>0</span>
