@@ -329,8 +329,11 @@ export default class Simulador {
             (this.fatorDecaimento + this.fatorAdicao) * intensidade.b) *
             dt;
         intensidadeFutura.c =
-          intensidade.c -
-          this.calculaQuimiotaxia(plano, linha, coluna, "c", "b") * dt;
+          intensidade.c +
+          (this.fatorDifusao.c *
+            this.calculaAcrescimoIntensidade(plano, linha, coluna, "c") -
+            this.calculaQuimiotaxia(plano, linha, coluna, "c", "b")) *
+            dt;
 
         planoFuturo[linha][coluna].a = Math.max(intensidadeFutura.a, 0);
         planoFuturo[linha][coluna].b = Math.max(intensidadeFutura.b, 0);
