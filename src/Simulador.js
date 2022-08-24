@@ -192,45 +192,45 @@ export default class Simulador {
       this.intensidadeMaxima[this.camadaExibida].toFixed(2);
   }
 
-  calculaAcrescimoIntensidade(plano, l, c, feromonio) {
-    let pesoOrtog = 0.2;
-    let pesoDiag = 0.05;
+  calculaAcrescimoIntensidade(plano, l, c, camada) {
+    const pesoOrtog = 0.2;
+    const pesoDiag = 0.05;
     let remocao = 0;
 
     let intensidadeRedor = 0;
     if (l - 1 >= 0) {
-      intensidadeRedor += plano[l - 1][c][feromonio] * pesoOrtog;
+      intensidadeRedor += plano[l - 1][c][camada] * pesoOrtog;
       remocao += pesoOrtog;
     }
     if (l + 1 < this.LINHAS) {
-      intensidadeRedor += plano[l + 1][c][feromonio] * pesoOrtog;
+      intensidadeRedor += plano[l + 1][c][camada] * pesoOrtog;
       remocao += pesoOrtog;
     }
     if (c - 1 >= 0) {
-      intensidadeRedor += plano[l][c - 1][feromonio] * pesoOrtog;
+      intensidadeRedor += plano[l][c - 1][camada] * pesoOrtog;
       remocao += pesoOrtog;
     }
     if (c + 1 < this.COLUNAS) {
-      intensidadeRedor += plano[l][c + 1][feromonio] * pesoOrtog;
+      intensidadeRedor += plano[l][c + 1][camada] * pesoOrtog;
       remocao += pesoOrtog;
     }
     if (l - 1 >= 0 && c - 1 >= 0) {
-      intensidadeRedor += plano[l - 1][c - 1][feromonio] * pesoDiag;
+      intensidadeRedor += plano[l - 1][c - 1][camada] * pesoDiag;
       remocao += pesoDiag;
     }
     if (l - 1 >= 0 && c + 1 < this.COLUNAS) {
-      intensidadeRedor += plano[l - 1][c + 1][feromonio] * pesoDiag;
+      intensidadeRedor += plano[l - 1][c + 1][camada] * pesoDiag;
       remocao += pesoDiag;
     }
     if (l + 1 < this.LINHAS && c - 1 >= 0) {
-      intensidadeRedor += plano[l + 1][c - 1][feromonio] * pesoDiag;
+      intensidadeRedor += plano[l + 1][c - 1][camada] * pesoDiag;
       remocao += pesoDiag;
     }
     if (l + 1 < this.LINHAS && c + 1 < this.COLUNAS) {
-      intensidadeRedor += plano[l + 1][c + 1][feromonio] * pesoDiag;
+      intensidadeRedor += plano[l + 1][c + 1][camada] * pesoDiag;
       remocao += pesoDiag;
     }
-    intensidadeRedor += plano[l][c][feromonio] * -1 * remocao;
+    intensidadeRedor -= plano[l][c][camada] * remocao;
 
     return intensidadeRedor;
   }
@@ -258,6 +258,7 @@ export default class Simulador {
             (this.fatorDecaimento + this.fatorAdicao) * intensidade.b) *
             dt;
         intensidadeFutura.c = intensidade.c;
+
         planoFuturo[linha][coluna].a = Math.max(intensidadeFutura.a, 0);
         planoFuturo[linha][coluna].b = Math.max(intensidadeFutura.b, 0);
         planoFuturo[linha][coluna].c = Math.max(intensidadeFutura.c, 0);
