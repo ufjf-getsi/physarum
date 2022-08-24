@@ -64,11 +64,12 @@ export default class Simulador {
       this.plano[linha] = [];
       this.planoFuturo[linha] = [];
       for (let coluna = 0; coluna < this.COLUNAS; coluna++) {
+        // Número aleatório entre 0 e 0.999...
         const celulaPlano = {
           a: this.valoresPadrao.a,
           b: this.valoresPadrao.b,
           c: this.valoresPadrao.c,
-        }; // Número aleatório entre 0 e 0.999...
+        };
         const celulaPlanoFuturo = { a: 0, b: 0, c: 0 };
         this.plano[linha][coluna] = celulaPlano;
         this.planoFuturo[linha][coluna] = celulaPlanoFuturo;
@@ -142,9 +143,9 @@ export default class Simulador {
 
     // Desenha na tela conforme os valores do plano
     intensidadeMaxInst[this.camadaExibida] = 0;
+    const intensidade = {};
     for (let linha = 0; linha < this.LINHAS; linha++) {
       for (let coluna = 0; coluna < this.COLUNAS; coluna++) {
-        const intensidade = {};
         intensidade.a = this.plano[linha][coluna].a;
         intensidade.b = this.plano[linha][coluna].b;
         intensidade.c = this.plano[linha][coluna].c;
@@ -152,12 +153,10 @@ export default class Simulador {
         somaIntensidade.b += intensidade.b;
         somaIntensidade.c += intensidade.c;
 
-        if (
-          intensidade[this.camadaExibida] >
-          intensidadeMaxInst[this.camadaExibida]
-        )
-          intensidadeMaxInst[this.camadaExibida] =
-            intensidade[this.camadaExibida];
+        intensidadeMaxInst[this.camadaExibida] = Math.max(
+          intensidadeMaxInst[this.camadaExibida],
+          intensidade[this.camadaExibida]
+        );
 
         if (this.camadaExibida === "c") {
           ctx.fillStyle = `hsl(45deg, 100%, ${
@@ -237,36 +236,31 @@ export default class Simulador {
   }
 
   reacao(plano, planoFuturo, dt) {
+    const intensidade = {};
+    const intensidadeFutura = {};
     for (let linha = 0; linha < this.LINHAS; linha++) {
       for (let coluna = 0; coluna < this.COLUNAS; coluna++) {
-        const intensidade = {};
         intensidade.a = this.plano[linha][coluna].a;
         intensidade.b = this.plano[linha][coluna].b;
         intensidade.c = this.plano[linha][coluna].c;
-        const intensidadeAFutura =
+        intensidadeFutura.a =
           intensidade.a +
-          (this.fatorDifusao["a"] *
+          (this.fatorDifusao.a *
             this.calculaAcrescimoIntensidade(plano, linha, coluna, "a") -
             intensidade.a * intensidade.b * intensidade.b +
             this.fatorAdicao * (1 - intensidade.a)) *
             dt;
-        const intensidadeBFutura =
+        intensidadeFutura.b =
           intensidade.b +
-          (this.fatorDifusao["b"] *
+          (this.fatorDifusao.b *
             this.calculaAcrescimoIntensidade(plano, linha, coluna, "b") +
             intensidade.a * intensidade.b * intensidade.b -
             (this.fatorDecaimento + this.fatorAdicao) * intensidade.b) *
             dt;
-        const intensidadeCFutura = intensidade.c;
-        if (intensidadeAFutura > 0)
-          planoFuturo[linha][coluna].a = intensidadeAFutura;
-        else planoFuturo[linha][coluna].a = 0;
-        if (intensidadeBFutura > 0)
-          planoFuturo[linha][coluna].b = intensidadeBFutura;
-        else planoFuturo[linha][coluna].b = 0;
-        if (intensidadeCFutura > 0)
-          planoFuturo[linha][coluna].c = intensidadeCFutura;
-        else planoFuturo[linha][coluna].c = 0;
+        intensidadeFutura.c = intensidade.c;
+        planoFuturo[linha][coluna].a = Math.max(intensidadeFutura.a, 0);
+        planoFuturo[linha][coluna].b = Math.max(intensidadeFutura.b, 0);
+        planoFuturo[linha][coluna].c = Math.max(intensidadeFutura.c, 0);
       }
     }
   }
