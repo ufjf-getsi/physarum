@@ -63,15 +63,15 @@ export default class Simulador {
     for (let linha = 0; linha < this.LINHAS; linha++) {
       this.plano[linha] = [];
       this.planoFuturo[linha] = [];
-      for (let c = 0; c < this.COLUNAS; c++) {
+      for (let coluna = 0; coluna < this.COLUNAS; coluna++) {
         const celulaPlano = {
           a: this.valoresPadrao.a,
           b: this.valoresPadrao.b,
           c: this.valoresPadrao.c,
         }; // Número aleatório entre 0 e 0.999...
         const celulaPlanoFuturo = { a: 0, b: 0, c: 0 };
-        this.plano[linha][c] = celulaPlano;
-        this.planoFuturo[linha][c] = celulaPlanoFuturo;
+        this.plano[linha][coluna] = celulaPlano;
+        this.planoFuturo[linha][coluna] = celulaPlanoFuturo;
       }
     }
   }
@@ -83,10 +83,15 @@ export default class Simulador {
     const escalaY = canvas.height / caixa.height;
     const x = (e.clientX - caixa.x) * escalaX;
     const y = (e.clientY - caixa.top) * escalaY;
-    const l = Math.floor(y / this.TAMANHO);
-    const c = Math.floor(x / this.TAMANHO);
-    if (l >= 0 && l < this.LINHAS && c >= 0 && c < this.COLUNAS) {
-      this.plano[l][c][this.camadaExibida]++;
+    const linha = Math.floor(y / this.TAMANHO);
+    const coluna = Math.floor(x / this.TAMANHO);
+    if (
+      linha >= 0 &&
+      linha < this.LINHAS &&
+      coluna >= 0 &&
+      coluna < this.COLUNAS
+    ) {
+      this.plano[linha][coluna][this.camadaExibida]++;
     }
   }
 
@@ -154,12 +159,20 @@ export default class Simulador {
           intensidadeMaxInst[this.camadaExibida] =
             intensidade[this.camadaExibida];
 
-        ctx.fillStyle = `hsl(${
-          (1 -
-            intensidade[this.camadaExibida] /
+        if (this.camadaExibida === "c") {
+          ctx.fillStyle = `hsl(45deg, 100%, ${
+            (intensidade[this.camadaExibida] /
               this.intensidadeMaxima[this.camadaExibida]) *
-          100
-        }deg, 100%, 50%)`;
+            50
+          }%`;
+        } else {
+          ctx.fillStyle = `hsl(${
+            (1 -
+              intensidade[this.camadaExibida] /
+                this.intensidadeMaxima[this.camadaExibida]) *
+            100
+          }deg, 100%, 50%)`;
+        }
         ctx.fillRect(
           coluna * this.TAMANHO,
           linha * this.TAMANHO,
