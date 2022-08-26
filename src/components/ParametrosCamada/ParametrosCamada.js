@@ -2,7 +2,7 @@ import React from "react";
 import GrupoInput from "../GrupoInput/GrupoInput";
 import GrupoSelect from "../GrupoSelect/GrupoSelect";
 
-export default function LinhasConfigCamada({
+export default function ParametrosCamada({
   camadaExibida,
   camposParametros,
   handleChange,
@@ -54,5 +54,5 @@ export default function LinhasConfigCamada({
     );
     linhas.push(linha);
   }
-  return <div id="linhasConfigCamada">{linhas}</div>;
+  return <div id="parametrosCamada">{linhas}</div>;
 }

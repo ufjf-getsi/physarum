@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./App.css";
 import InfoDisplay from "./components/InfoDisplay/InfoDisplay";
-import AnimationScreen from "./components/AnimationScreen/AnimationScreen";
+import TelaAnimacao from "./components/TelaAnimacao/TelaAnimacao";
 import Painel from "./components/Painel/Painel";
 
 import Simulador from "./Simulador";
@@ -134,7 +134,7 @@ export default function App() {
     <div className="app">
       <div className="app-container">
         <div>
-          <AnimationScreen
+          <TelaAnimacao
             simulador={simulador}
             animate={animate}
             width={simulador.COLUNAS * simulador.TAMANHO}

@@ -1,5 +1,5 @@
 import React from "react";
-import "../Formulario/Formulario.css";
+import "./GrupoInput.css";
 
 export default function GrupoInput({
   label,
