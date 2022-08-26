@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function InfoDisplay() {
+export default function InfoConcentracao() {
   return (
     <div className="linha">
       <div className="grupo-info">

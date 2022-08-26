@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./App.css";
-import InfoDisplay from "./components/InfoDisplay/InfoDisplay";
+import InfoConcentracao from "./components/InfoConcentracao/InfoConcentracao";
 import TelaAnimacao from "./components/TelaAnimacao/TelaAnimacao";
 import Painel from "./components/Painel/Painel";
 
@@ -146,7 +146,7 @@ export default function App() {
             handleTouchMove={handleTouchMove}
           />
         </div>
-        <InfoDisplay />
+        <InfoConcentracao />
         <Painel
           animate={animate}
           handleClickPlayPause={handleClickPlayPause}
