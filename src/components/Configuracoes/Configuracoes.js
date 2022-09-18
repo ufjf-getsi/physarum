@@ -1,9 +1,9 @@
 import React from "react";
-import "./Formulario.css";
-import LinhasConfigCamada from "../LinhasConfigCamada/LinhasConfigCamada";
+import "./Configuracoes.css";
+import ParametrosCamada from "../ParametrosCamada/ParametrosCamada";
 import GrupoInput from "../GrupoInput/GrupoInput";
 
-export default function Formulario({
+export default function Configuracoes({
   handleSubmit,
   camadaExibida,
   camposDimensoes,
@@ -14,7 +14,7 @@ export default function Formulario({
   return (
     <form className="formulario" onSubmit={(event) => handleSubmit(event)}>
       <div id="configuracoes" className="configuracoes">
-        <LinhasConfigCamada
+        <ParametrosCamada
           camadaExibida={camadaExibida}
           camposParametros={camposParametros}
           handleChange={handleChangeParametros}

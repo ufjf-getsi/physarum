@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./App.css";
-import InfoDisplay from "./components/InfoDisplay/InfoDisplay";
-import AnimationScreen from "./components/AnimationScreen/AnimationScreen";
+import InfoConcentracao from "./components/InfoConcentracao/InfoConcentracao";
+import TelaAnimacao from "./components/TelaAnimacao/TelaAnimacao";
 import Painel from "./components/Painel/Painel";
 
 import Simulador from "./Simulador";
@@ -15,6 +15,7 @@ export default function App() {
   const [camposParametros, setCamposParametros] = useState({
     a: { fatorDifusao: 1, fatorAdicao: 0.055, padrao: "A" },
     b: { fatorDifusao: 0.5, fatorDecaimento: 0.062, padrao: "A" },
+    c: { fatorDifusao: 1, fatorQuimiotaxia: 0.5, padrao: "A" },
   });
   const [camposDimensoes, setCamposDimensoes] = useState({
     qtdLinhas: "50",
@@ -56,20 +57,21 @@ export default function App() {
     event.preventDefault();
     switch (camadaExibida) {
       case "a":
-        const fatorDifusaoA = Number(camposParametros.a.fatorDifusao);
-        simulador.fatorDifusao.a = fatorDifusaoA;
-        const fatorAdicao = Number(camposParametros.a.fatorAdicao);
-        simulador.fatorAdicao = fatorAdicao;
-        const valoresPadraoA = camposParametros.a.padrao;
-        simulador.valoresPadrao.a = valoresPadraoA;
+        simulador.fatorDifusao.a = Number(camposParametros.a.fatorDifusao);
+        simulador.fatorAdicao = Number(camposParametros.a.fatorAdicao);
+        simulador.valoresPadrao.a = camposParametros.a.padrao;
         break;
       case "b":
-        const fatorDifusaoB = Number(camposParametros.b.fatorDifusao);
-        simulador.fatorDifusao.b = fatorDifusaoB;
-        const fatorDecaimento = Number(camposParametros.b.fatorDecaimento);
-        simulador.fatorDecaimento = fatorDecaimento;
-        const valoresPadraoB = camposParametros.b.padrao;
-        simulador.valoresPadrao.b = valoresPadraoB;
+        simulador.fatorDifusao.b = Number(camposParametros.b.fatorDifusao);
+        simulador.fatorDecaimento = Number(camposParametros.b.fatorDecaimento);
+        simulador.valoresPadrao.b = camposParametros.b.padrao;
+        break;
+      case "c":
+        simulador.fatorDifusao.c = Number(camposParametros.c.fatorDifusao);
+        simulador.fatorQuimiotaxia = Number(
+          camposParametros.c.fatorQuimiotaxia
+        );
+        simulador.valoresPadrao.c = camposParametros.c.padrao;
         break;
       default:
         break;
@@ -134,7 +136,7 @@ export default function App() {
     <div className="app">
       <div className="app-container">
         <div>
-          <AnimationScreen
+          <TelaAnimacao
             simulador={simulador}
             animate={animate}
             width={simulador.COLUNAS * simulador.TAMANHO}
@@ -146,7 +148,7 @@ export default function App() {
             handleTouchMove={handleTouchMove}
           />
         </div>
-        <InfoDisplay />
+        <InfoConcentracao />
         <Painel
           animate={animate}
           handleClickPlayPause={handleClickPlayPause}

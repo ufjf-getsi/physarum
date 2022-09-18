@@ -2,7 +2,7 @@ import React from "react";
 import GrupoInput from "../GrupoInput/GrupoInput";
 import GrupoSelect from "../GrupoSelect/GrupoSelect";
 
-export default function LinhasConfigCamada({
+export default function ParametrosCamada({
   camadaExibida,
   camposParametros,
   handleChange,
@@ -11,10 +11,11 @@ export default function LinhasConfigCamada({
     return String.fromCharCode(97 + indice);
   }
   let linhas = [];
-  for (let int = 0; int < 2; int++) {
+  for (let int = 0; int < 3; int++) {
     const camada = letraDoAlfabeto(int);
     const camadaMaiusculo = camada.toUpperCase();
-    const adicaoOuDecaimento = camada === "a" ? "Adicao" : "Decaimento";
+    const fatorCamada =
+      camada === "a" ? "Adicao" : camada === "b" ? "Decaimento" : "Quimiotaxia";
     const linha = (
       <div
         className="linha"
@@ -33,13 +34,13 @@ export default function LinhasConfigCamada({
           camada={camada}
         />
         <GrupoInput
-          label={adicaoOuDecaimento}
-          name={`fator${adicaoOuDecaimento}`}
+          label={fatorCamada}
+          name={`fator${fatorCamada}`}
           type="number"
           min="0"
           max="10"
           step="0.001"
-          value={camposParametros[camada][`fator${adicaoOuDecaimento}`]}
+          value={camposParametros[camada][`fator${fatorCamada}`]}
           handleChange={(event) => handleChange(event)}
           camada={camada}
         />
@@ -54,5 +55,5 @@ export default function LinhasConfigCamada({
     );
     linhas.push(linha);
   }
-  return <div id="linhasConfigCamada">{linhas}</div>;
+  return <div id="parametrosCamada">{linhas}</div>;
 }

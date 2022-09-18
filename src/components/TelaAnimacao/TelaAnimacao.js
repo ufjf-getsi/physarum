@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from "react";
-import "./AnimationScreen.css";
+import "./TelaAnimacao.css";
 
-export default function AnimationScreen({
+export default function TelaAnimacao({
   handleAnimationStep,
   handleDraw,
   animate,

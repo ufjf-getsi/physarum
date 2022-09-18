@@ -1,6 +1,6 @@
 import React from "react";
 import "./Painel.css";
-import Formulario from "./../../components/Formulario/Formulario";
+import Configuracoes from "../Configuracoes/Configuracoes";
 
 export default function Painel({
   animate,
@@ -28,6 +28,7 @@ export default function Painel({
           >
             <option value="a">A</option>
             <option value="b">B</option>
+            <option value="c">C</option>
           </select>
         </div>
       </div>
@@ -53,7 +54,7 @@ export default function Painel({
               </button>
             </div>
           </div>
-          <Formulario
+          <Configuracoes
             handleSubmit={handleSubmit}
             camadaExibida={camadaExibida}
             camposDimensoes={camposDimensoes}
