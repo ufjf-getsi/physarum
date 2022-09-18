@@ -13,9 +13,9 @@ export default class Simulador {
     this.TAMANHO = 7;
 
     // Controle do modelo
-    this.fatorDecaimento = 0.062;
-    this.fatorDecaimentoC = 0.01;
     this.fatorAdicao = 0.055;
+    this.fatorDecaimento = 0.062;
+    this.fatorQuimiotaxia = 0.5;
     this.fatorDifusao = { a: 1, b: 0.5, c: 1 };
     this.valoresPadrao = {
       aa: "A",
@@ -277,19 +277,19 @@ export default class Simulador {
 
     // População
     const popPosteriorL =
-      l != this.LINHAS - 1 ? plano[l + 1][c][camadaPop] : popAtual;
-    const popAnteriorL = l != 0 ? plano[l - 1][c][camadaPop] : popAtual;
+      l !== this.LINHAS - 1 ? plano[l + 1][c][camadaPop] : popAtual;
+    const popAnteriorL = l !== 0 ? plano[l - 1][c][camadaPop] : popAtual;
     const popPosteriorC =
-      c != this.COLUNAS - 1 ? plano[l][c + 1][camadaPop] : popAtual;
-    const popAnteriorC = c != 0 ? plano[l][c - 1][camadaPop] : popAtual;
+      c !== this.COLUNAS - 1 ? plano[l][c + 1][camadaPop] : popAtual;
+    const popAnteriorC = c !== 0 ? plano[l][c - 1][camadaPop] : popAtual;
 
     // Atrativo
     const atratPosteriorL =
-      l != this.LINHAS - 1 ? plano[l + 1][c][camadaAtrat] : atratAtual;
-    const atratAnteriorL = l != 0 ? plano[l - 1][c][camadaAtrat] : atratAtual;
+      l !== this.LINHAS - 1 ? plano[l + 1][c][camadaAtrat] : atratAtual;
+    const atratAnteriorL = l !== 0 ? plano[l - 1][c][camadaAtrat] : atratAtual;
     const atratPosteriorC =
-      c != this.COLUNAS - 1 ? plano[l][c + 1][camadaAtrat] : atratAtual;
-    const atratAnteriorC = c != 0 ? plano[l][c - 1][camadaAtrat] : atratAtual;
+      c !== this.COLUNAS - 1 ? plano[l][c + 1][camadaAtrat] : atratAtual;
+    const atratAnteriorC = c !== 0 ? plano[l][c - 1][camadaAtrat] : atratAtual;
 
     const gradienteAtratL = (atratPosteriorL - atratAnteriorL) / 2;
     const gradienteAtratC = (atratPosteriorC - atratAnteriorC) / 2;
@@ -332,7 +332,8 @@ export default class Simulador {
           intensidade.c +
           (this.fatorDifusao.c *
             this.calculaAcrescimoIntensidade(plano, linha, coluna, "c") -
-            this.calculaQuimiotaxia(plano, linha, coluna, "c", "b")) *
+            this.fatorQuimiotaxia *
+              this.calculaQuimiotaxia(plano, linha, coluna, "c", "b")) *
             dt;
 
         planoFuturo[linha][coluna].a = Math.max(intensidadeFutura.a, 0);

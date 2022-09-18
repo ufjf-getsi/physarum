@@ -15,7 +15,7 @@ export default function App() {
   const [camposParametros, setCamposParametros] = useState({
     a: { fatorDifusao: 1, fatorAdicao: 0.055, padrao: "A" },
     b: { fatorDifusao: 0.5, fatorDecaimento: 0.062, padrao: "A" },
-    c: { fatorDifusao: 1, fatorDecaimento: 0.01, padrao: "A" },
+    c: { fatorDifusao: 1, fatorQuimiotaxia: 0.5, padrao: "A" },
   });
   const [camposDimensoes, setCamposDimensoes] = useState({
     qtdLinhas: "50",
@@ -67,8 +67,10 @@ export default function App() {
         simulador.valoresPadrao.b = camposParametros.b.padrao;
         break;
       case "c":
-        simulador.fatorDifusao.c = Number(camposParametros.b.fatorDifusao);
-        simulador.fatorDecaimentoC = Number(camposParametros.c.fatorDecaimento);
+        simulador.fatorDifusao.c = Number(camposParametros.c.fatorDifusao);
+        simulador.fatorQuimiotaxia = Number(
+          camposParametros.c.fatorQuimiotaxia
+        );
         simulador.valoresPadrao.c = camposParametros.c.padrao;
         break;
       default:

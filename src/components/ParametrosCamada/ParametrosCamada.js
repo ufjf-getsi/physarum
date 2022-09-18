@@ -14,7 +14,8 @@ export default function ParametrosCamada({
   for (let int = 0; int < 3; int++) {
     const camada = letraDoAlfabeto(int);
     const camadaMaiusculo = camada.toUpperCase();
-    const adicaoOuDecaimento = camada === "a" ? "Adicao" : "Decaimento";
+    const fatorCamada =
+      camada === "a" ? "Adicao" : camada === "b" ? "Decaimento" : "Quimiotaxia";
     const linha = (
       <div
         className="linha"
@@ -33,13 +34,13 @@ export default function ParametrosCamada({
           camada={camada}
         />
         <GrupoInput
-          label={adicaoOuDecaimento}
-          name={`fator${adicaoOuDecaimento}`}
+          label={fatorCamada}
+          name={`fator${fatorCamada}`}
           type="number"
           min="0"
           max="10"
           step="0.001"
-          value={camposParametros[camada][`fator${adicaoOuDecaimento}`]}
+          value={camposParametros[camada][`fator${fatorCamada}`]}
           handleChange={(event) => handleChange(event)}
           camada={camada}
         />
